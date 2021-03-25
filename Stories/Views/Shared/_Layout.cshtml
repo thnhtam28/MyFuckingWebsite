@@ -1,14 +1,12 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="x-ua-compatible" content="ie=edge" />
-
-    <!-- Facebook meta tags  -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <!--=============== Facebook meta tags  ===============-->
     <meta property="fb:app_id" content="449245312768740" />
     <meta name="google-site-verification" content="PQRkriSlujT0xLzry5OFdQN_gN_EEcq2vWtwlDx2JZs" />
     <meta name="google-signin-client_id" content="@Configuration["AppSetting:GoogleClientID"]">
@@ -23,392 +21,230 @@
         <meta name="description" content="Úi xồi quả blog chill nhất Vịnh Bắc Bộ là đây chứ đâu!?" />
         <meta property="og:image" content="/imgs/news/thumb-10.jpg" />
     }
+    <meta name="robots" content="index, follow" />
+    <meta name="keywords" content="" />
     <meta property="og:image:width" content="1620">
     <meta property="og:image:height" content="983">
     <meta name="author" content="Lê Võ Thành Tâm" />
 
     <title>@ViewData["Title"] | KXGE</title>
-    <link rel="shortcut icon" type="image/x-icon" href="~/imgs/theme/favicon.png">
 
-    <!-- NewsBoard CSS  -->
-    <link rel="stylesheet" href="~/css/style.css">
-    <link rel="stylesheet" href="~/css/widgets.css">
-    <link rel="stylesheet" href="~/css/responsive.css">
+    <!--=============== css  ===============-->
+    <link type="text/css" rel="stylesheet" href="~/css/reset.css">
+    <link type="text/css" rel="stylesheet" href="~/css/plugins.css">
+    <link type="text/css" rel="stylesheet" href="~/css/style.css">
+    <link type="text/css" rel="stylesheet" href="~/css/color.css">
+
+    <!--=============== favicons ===============-->
+    <link rel="shortcut icon" href="~/images/favicon.ico">
 </head>
 <body>
-    <div class="scroll-progress primary-bg"></div>
-    <!-- Start Preloader -->
-    <div class="preloader text-center">
-        <div class="circle"></div>
+    <!--loader-->
+    <div class="loader-wrap">
+        <div class="pin"></div>
     </div>
-    <!--Offcanvas sidebar-->
-    <aside id="sidebar-wrapper" class="custom-scrollbar offcanvas-sidebar">
-        <button class="off-canvas-close"><i class="elegant-icon icon_close"></i></button>
-        <div class="sidebar-inner">
-            <!--Categories-->
-            <div class="sidebar-widget widget_categories mb-50 mt-30">
-                <div class="widget-header-2 position-relative">
-                    <h5 class="mt-5 mb-15">Hot topics</h5>
-                </div>
-                <div class="widget_nav_menu">
-                    <ul id="hot-topics">
-                    </ul>
-                </div>
+    <!--loader end-->
+    <div id="main">
+        <!-- header-->
+        <header class="main-header">
+            <a class="logo-holder" href="/">
+                <img src="~/images/logo.png" alt="">
+            </a>
+            <!-- nav-button-wrap-->
+            <div class="nav-button but-hol">
+                <span class="nos"></span>
+                <span class="ncs"></span>
+                <span class="nbs"></span>
+                <div class="menu-button-text">Menu</div>
             </div>
-            <!--Latest-->
-            <div class="sidebar-widget widget-latest-posts mb-50">
-                <div class="widget-header-2 position-relative mb-30">
-                    <h5 class="mt-5 mb-30">Đừng bỏ lỡ</h5>
-                </div>
-                <div class="post-block-list post-module-1 post-module-5">
-                    <ul class="list-post" id="dont-miss">
-                    </ul>
-                </div>
+            <!-- nav-button-wrap end-->
+            <div class="header-social">
+                <ul>
+                    <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                    <li><a href="#" target="_blank"><i class="fab fa-vk"></i></a></li>
+                </ul>
             </div>
-            <!--Ads-->
-            <div class="sidebar-widget widget-ads">
-                <div class="widget-header-2 position-relative mb-30">
-                    <h5 class="mt-5 mb-30">Quảng cáo</h5>
-                </div>
-                <a href="../../../user/alithemes/portfolio.htm" target="_blank">
-                    <img class="advertise-img border-radius-5" src="~/imgs/ads/ads-1.jpg" alt="">
-                </a>
-                <span>Tài trợ bởi </span>
+            <!--  showshare -->
+            <div class="show-share showshare">
+                <i class="fal fa-retweet"></i>
+                <span>Share This</span>
             </div>
+            <!--  showshare end -->
+        </header>
+        <!--  header end -->
+        <!--  navigation bar -->
+        <div class="nav-overlay">
+            <div class="tooltip color-bg">Close Menu</div>
         </div>
-    </aside>
-    <!-- Start Header -->
-    <header class="main-header header-style-1 font-heading">
-        <div class="header-top">
-            <div class="container">
-                <div class="row pt-20 pb-20">
-                    <div class="col-md-3 col-xs-6">
-                        <a href="/"><img class="logo" src="~/imgs/theme/logo2.png" alt=""></a>
-                    </div>
-                    <div class="col-md-9 col-xs-6 text-right header-top-right ">
-                        <ul class="list-inline nav-topbar d-none d-md-inline">
-                            @{
-                                if (User.Identity.IsAuthenticated)
-                                {
-                                    <li class="list-inline-item menu-item-has-children">
-                                        <a href="/Author/@User.Claims.FirstOrDefault(c => c.Type == "Username").Value"><i class="elegant-icon icon_profile mr-5"></i>@User.Claims.FirstOrDefault(c => c.Type == "Name").Value</a>
-                                        <ul class="sub-menu font-small">
-                                            <li><a href="/Author/@User.Claims.FirstOrDefault(c => c.Type == "Username").Value">Trang cá nhân</a></li>
-                                            @if (User.Claims.FirstOrDefault(c => c.Type == "IsAuthor").Value == "true")
-                                            {
-                                                <li><a href="/CreatePost">Tạo bài viết</a></li>
-                                                <li><a href="/PageSetting">Cài đặt blog</a></li>
-                                            }
-                                            <li><a asp-action="LogOut" asp-controller="User" id="btnLogOut">Đăng xuất</a></li>
-                                        </ul>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li class="list-inline-item"><a href="/Login"><i class="elegant-icon icon_profile mr-5"></i>Đăng nhập</a></li>
-                                }
-                            }
-
-                        </ul>
-                        <span class="vertical-divider mr-20 ml-20 d-none d-md-inline"></span>
-                        <button class="search-icon d-none d-md-inline"><span class="mr-15 text-muted font-small"><i class="elegant-icon icon_search mr-5"></i>Tìm kiếm</span></button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="header-sticky">
-            <div class="container align-self-center">
-                <div class="mobile_menu d-lg-none d-block"></div>
-                <div class="main-nav d-none d-lg-block float-left">
-                    <nav>
-                        <!--Desktop menu-->
-                        <ul id="desktop-menu" class="main-menu d-none d-lg-inline font-small">
-                        </ul>
-                        <!--Mobile menu-->
-                        <ul id="mobile-menu" class="d-block d-lg-none text-muted">
-                            <li class="menu-item-has-children"><a href="/">Trang chủ</a></li>
-                            @if (User.Identity.IsAuthenticated)
-                            {
-                                <li class="menu-item-has-children">
-                                    <a href="#">@User.Claims.FirstOrDefault(c => c.Type == "Name").Value</a>
-                                    <ul class="sub-menu font-small">
-                                        <li class="menu-item-has-children"><a href="/Author/@User.Claims.FirstOrDefault(c => c.Type == "Username").Value">Trang cá nhân</a></li>
-                                        @if (User.Claims.FirstOrDefault(c => c.Type == "IsAuthor").Value == "true")
-                                        {
-                                            <li class="menu-item-has-children"><a href="/CreatePost">Tạo bài viết</a></li>
-                                            <li class="menu-item-has-children"><a href="/PageSetting">Cài đặt blog</a></li>
-                                        }
-                                        <li class="menu-item-has-children"><a asp-action="LogOut" asp-controller="User" id="btnLogOut">Đăng xuất</a></li>
+        <div class="nav-holder">
+            <a class="header-logo" href="/"><img src="~/images/logo2.png" alt=""></a>
+            <div class="nav-title"><span>Menu</span></div>
+            <div class="nav-inner-wrap">
+                <nav class="nav-inner sound-nav" id="menu">
+                    <ul>
+                        <li>
+                            <a href="#" class="act-link">Home</a>
+                            <!--level 2 -->
+                            <ul>
+                                <li><a href="index.html">Half Slider</a></li>
+                                <li><a href="index2.html">Half Image</a></li>
+                                <li><a href="index3.html">Impulse Image</a></li>
+                                <li><a href="index4.html">Fullscreen  Image</a></li>
+                                <li><a href="index5.html">Fullscreen  Slider</a></li>
+                                <li><a href="index6.html">Slideshow</a></li>
+                                <li><a href="index7.html">Fullscreen Carousel</a></li>
+                                <li><a href="index8.html" class="act-link">Video</a></li>
+                            </ul>
+                            <!--level 2 end -->
+                        </li>
+                        <li>
+                            <a href="#">Portfolio</a>
+                            <!--level 2 -->
+                            <ul>
+                                <li><a href="portfolio.html">Masonry</a></li>
+                                <li><a href="portfolio2.html">Masonry 2</a></li>
+                                <li><a href="portfolio3.html">Boxed</a></li>
+                                <li><a href="portfolio4.html">Boxed 2 </a></li>
+                                <li><a href="portfolio5.html">Parallax</a></li>
+                                <li><a href="portfolio6.html">Parallax dark</a></li>
+                                <li><a href="portfolio8.html">List</a></li>
+                                <li>
+                                    <a href="#">Single</a>
+                                    <!--level 3 -->
+                                    <ul>
+                                        <li><a href="portfolio-single.html">Carousel</a></li>
+                                        <li><a href="portfolio-single2.html">Carousel 2</a></li>
+                                        <li><a href="portfolio-single3.html">Gallery</a></li>
+                                        <li><a href="portfolio-single4.html">Gallery 2</a></li>
+                                        <li><a href="portfolio-single5.html">Slider</a></li>
+                                        <li><a href="portfolio-single6.html">Showcase</a></li>
+                                        <li><a href="portfolio-single7.html">Fullscreen  Slider</a></li>
+                                        <li><a href="portfolio-single8.html">Video</a></li>
                                     </ul>
+                                    <!--level 3 end -->
                                 </li>
-                            }
-                            else
-                            {
-                                <li class="menu-item-has-children"><a href="/Login">Đăng nhập</a></li>
-                            }
-                            <li class="menu-item-has-children">
-                                <a href="#">Danh mục</a>
-                                <ul class="sub-menu font-small" id="ul-mobile-menu">
-                                </ul>
-                            </li>
-                            <li class="menu-item-has-children"><a href="/About">About</a></li>
-                            <li class="menu-item-has-children"><a href="/Contact">Liên hệ</a></li>
-                        </ul>
-                    </nav>
-                </div>
-                <div class="float-right header-tools text-muted font-small">
-                    <ul class="header-social-network d-inline-block list-inline mr-15">
-                        <li class="list-inline-item"><a class="social-icon fb text-xs-center" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=@Configuration["AppSetting:HostURL"]"><i class="elegant-icon social_facebook"></i></a></li>
-                        <li class="list-inline-item"><a class="social-icon tw text-xs-center" target="_blank" href="https://twitter.com/intent/tweet?url=@Configuration["AppSetting:HostURL"]&text=Blog này chất quá mấy bạn!!"><i class="elegant-icon social_twitter "></i></a></li>
-                        <li class="list-inline-item"><a class="social-icon pt text-xs-center" target="_blank" href="#"><i class="elegant-icon social_pinterest "></i></a></li>
+                            </ul>
+                            <!--level 2 end -->
+                        </li>
+                        <li><a href="services.html">Services</a></li>
+                        <li><a href="contacts.html">Contacts</a></li>
+                        <li><a href="blog.html">Blog</a></li>
+                        <li>
+                            <a href="#">Pages</a>
+                            <!--level 2 -->
+                            <ul>
+                                <li><a href="services2.html">Services 2</a></li>
+                                <li><a href="blog-single.html">Blog single</a></li>
+                                <li><a href="team.html">Team</a></li>
+                                <li><a href="team-single.html">Team Single</a></li>
+                                <li><a href="coming-soon.html">Coming soon</a></li>
+                                <li><a href="404.html">404</a></li>
+                            </ul>
+                            <!--level 2 end -->
+                        </li>
                     </ul>
-                    <div class="off-canvas-toggle-cover d-inline-block">
-                        <div class="off-canvas-toggle hidden d-inline-block" id="off-canvas-toggle">
-                            <span></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="clearfix"></div>
+                </nav>
             </div>
         </div>
-    </header>
-    <!--Start search form-->
-    <div class="main-search-form">
-        <div class="container">
-            <div class=" pt-50 pb-50 ">
-                <div class="row mb-20">
-                    <div class="col-12 align-self-center main-search-form-cover m-auto">
-                        <p class="text-center"><span class="search-text-bg">Tìm kiếm</span></p>
-                        <form class="search-header" method="GET" asp-controller="Blog" asp-action="Search">
-                            <div class="input-group w-100">
-                                <input type="text" class="form-control" placeholder="Tìm bài viết, nội dung, tác giả,..." name="keyword" id="keyword">
-                                <div class="input-group-append">
-                                    <button class="btn btn-search bg-white" type="submit">
-                                        <i class="elegant-icon icon_search"></i>
-                                    </button>
+        <!--  navigation bar end -->
+        <!-- wrapper -->
+        <div id="wrapper">
+
+            @RenderBody()
+
+            <!-- footer-->
+            <div class="height-emulator fl-wrap"></div>
+            <footer class="main-footer fixed-footer">
+                <!--footer-inner-->
+                <div class="footer-inner fl-wrap">
+                    <div class="container">
+                        <div class="partcile-dec" data-parcount="90"></div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <div class="footer-title fl-wrap">
+                                    <span>Solonick</span>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="row mt-80 text-center">
-                    <div class="col-12 font-small suggested-area">
-                        <h5 class="suggested font-heading mb-20 text-muted"> <strong>Từ khóa gợi ý:</strong></h5>
-                        <ul class="list-inline d-inline-block">
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Cyberpunk">Cyberpunk</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Valorant">Valorant</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Marvel">Marvel</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Vans">Vans</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Call+of+Duty">Call of Duty</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Qlimax">Qlimax</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=RTX">RTX</a></li>
-                            <li class="list-inline-item"><a href="/Blog/Search?keyword=Hardstyle">Hardstyle</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="row mt-80" id="sugg-categories">
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Start Main content -->
-    <main>
-        @RenderBody()
-    </main>
-    <!-- End Main content -->
-    @{
-        string controller = "";
-        string action = "";
-        if (ViewContext.RouteData.Values["controller"] != null)
-        {
-            controller = ViewContext.RouteData.Values["controller"].ToString();
-        }
-
-        if (ViewContext.RouteData.Values["action"] != null)
-        {
-            action = ViewContext.RouteData.Values["action"].ToString();
-        }
-        if (action.ToLower() != "login" && action.ToLower() != "register" && action.ToLower() != "error")
-        {
-            <!--site-bottom-->
-            <div class="site-bottom pt-50 pb-50">
-                <div class="container">
-                    <div class="row" id="footer-posts">
-                    </div>
-                    <div class="sidebar-widget widget-latest-posts mb-30 mt-20 wow fadeInUp animated">
-                        <div class="widget-header-2 position-relative mb-30">
-                            <h5 class="mt-5 mb-30">Danh mục</h5>
-                        </div>
-                        <div class="carausel-3-columns" id="categoriesFooter">
-                        </div>
-                    </div>
-                </div>
-                <!--container-->
-            </div>
-            <!--end site-bottom-->
-        }
-    }
-
-    <!-- Footer Start-->
-    <footer class="pt-50 pb-20 bg-grey">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="sidebar-widget wow fadeInUp animated mb-30">
-                        <div class="widget-header-2 position-relative mb-30">
-                            <h5 class="mt-5 mb-30">About me</h5>
-                        </div>
-                        <div class="textwidget">
-                            <p>
-                                Start writing, no matter what. The water does not flow until the faucet is turned on.
-                            </p>
-                            <p>
-                                <strong class="color-black">Address</strong><br>
-                                123 Main Street<br>
-                                New York, NY 10001
-                            </p>
-                            <p>
-                                <strong class="color-black">Follow me</strong><br>
-                                <ul class="header-social-network d-inline-block list-inline color-white mb-20">
-                                    <li class="list-inline-item"><a class="fb" href="https://facebook.com/levothanhtam" target="_blank" title="Facebook"><i class="elegant-icon social_facebook"></i></a></li>
-                                    <li class="list-inline-item"><a class="tw" href="https://twitter.com/MrChum593" target="_blank" title="Twitter"><i class="elegant-icon social_twitter"></i></a></li>
-                                    <li class="list-inline-item"><a class="is" href="https://instagram.com/vktr.27" target="_blank" title="Instagram"><i class="elegant-icon social_instagram"></i></a></li>
-                                    <li class="list-inline-item"><a class="pt" href="https://www.pinterest.com/thnhtmlv" target="_blank" title="Pinterest"><i class="elegant-icon social_pinterest"></i></a></li>
-                                </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-2 col-md-6">
-                    <div class="sidebar-widget widget_categories wow fadeInUp animated mb-30" data-wow-delay="0.1s">
-                        <div class="widget-header-2 position-relative mb-30">
-                            <h5 class="mt-5 mb-30">Quick link</h5>
-                        </div>
-                        <ul class="font-small">
-                            <li class="cat-item cat-item-2"><a href="/About">About me</a></li>
-                            <li class="cat-item cat-item-4"><a href="/Contact">Help & Support</a></li>
-                            <li class="cat-item cat-item-5"><a href="#">​​Licensing Policy</a></li>
-                            <li class="cat-item cat-item-6"><a href="#">Refund Policy</a></li>
-                            <li class="cat-item cat-item-7"><a href="https://www.topcv.vn/p/levothanhtam" target="_blank">Hire me</a></li>
-                            <li class="cat-item cat-item-7"><a href="/Contact">Contact</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="sidebar-widget widget_tagcloud wow fadeInUp animated mb-30" data-wow-delay="0.2s">
-                        <div class="widget-header-2 position-relative mb-30">
-                            <h5 class="mt-5 mb-30">Tagcloud</h5>
-                        </div>
-                        <div class="tagcloud mt-50">
-
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6">
-                    <div class="sidebar-widget widget_newsletter wow fadeInUp animated mb-30" data-wow-delay="0.3s">
-                        <div class="widget-header-2 position-relative mb-30">
-                            <h5 class="mt-5 mb-30">Newsletter</h5>
-                        </div>
-                        <div class="newsletter">
-                            <p class="font-medium">Đăng ký bản tin của tôi và nhận thông báo về bài viết mới nhất qua email.</p>
-                            <div class="input-group form-subcriber mt-30 d-flex">
-                                <input type="email" class="form-control bg-white font-small" placeholder="Email của bạn">
-                                <button class="btn bg-primary text-white disabled" type="submit">Đăng ký</button>
-                                <label class="mt-20"> <input class="mr-5" name="name" type="checkbox" value="1" id="agree-subscribe" required=""> Tôi đồng ý với các <a href="#" target="_blank">điều khoản &amp; điều kiện</a> </label>
+                            <div class="col-md-5">
+                                <div class="footer-header fl-wrap"><span>01.</span>Last Twitts</div>
+                                <div class="footer-box fl-wrap">
+                                    <div class="twitter-swiper-container fl-wrap" id="twitts-container"></div>
+                                    <a href="#" class="btn float-btn trsp-btn">Follow</a>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="footer-header fl-wrap"><span>02.</span> Subscribe / Contacts</div>
+                                <!-- footer-box-->
+                                <div class="footer-box fl-wrap">
+                                    <p>Want to be notified when we launch a new template or an udpate. Just sign up and we'll send you a notification by email.</p>
+                                    <div class="subcribe-form fl-wrap">
+                                        <form id="subscribe" class="fl-wrap">
+                                            <input class="enteremail" name="email" id="subscribe-email" placeholder="email" spellcheck="false" type="text">
+                                            <button type="submit" id="subscribe-button" class="subscribe-button"><i class="fal fa-paper-plane"></i> Send </button>
+                                            <label for="subscribe-email" class="subscribe-message"></label>
+                                        </form>
+                                    </div>
+                                    <!-- footer-contacts-->
+                                    <div class="footer-contacts fl-wrap">
+                                        <ul>
+                                            <li><i class="fal fa-phone"></i><span>Phone :</span><a href="#">+489756412322</a></li>
+                                            <li><i class="fal fa-envelope"></i><span>Email :</span><a href="#">yourmail@domain.com</a></li>
+                                            <li><i class="fal fa-map-marker"></i><span>Address</span><a href="#">USA 27TH Brooklyn NY</a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- footer end -->
+                                    <!-- footer-socilal -->
+                                    <div class="footer-socilal fl-wrap">
+                                        <ul>
+                                            <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                                            <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                                            <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                                            <li><a href="#" target="_blank"><i class="fab fa-vk"></i></a></li>
+                                        </ul>
+                                    </div>
+                                    <!-- footer-socilal end -->
+                                </div>
+                                <!-- footer-box end-->
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="footer-copy-right pt-30 mt-20 wow fadeInUp animated">
-                <p class="float-md-left font-small text-muted">© @DateTime.Now.Year, KXGE</p>
-                <p class="float-md-right font-small text-muted">
-                    Design by <a href="../../../index.htm" target="_blank">AliThemes</a> x <a href="https://www.facebook.com/BLACKCrewNeverSurrender/" target="_blank">KXGE</a> | All rights reserved
-                </p>
+                <!--footer-inne endr-->
+                <!--subfooter-->
+                <div class="subfooter fl-wrap">
+                    <div class="container">
+                        <!-- policy-box-->
+                        <div class="policy-box">
+                            <span>&#169; Solonick 2018  /  All rights reserved. </span>
+                        </div>
+                        <!-- policy-box end-->
+                        <a href="#" class="to-top color-bg"><i class="fal fa-angle-up"></i><span></span></a>
+                    </div>
+                </div>
+                <!--subfooter end-->
+            </footer>
+            <!-- footer end-->
+            <!-- contact-btn -->
+            <a class="contact-btn color-bg" href="contact"><i class="fal fa-envelope"></i><span>Get in Touch</span></a>
+            <!-- contact-btn end -->
+        </div>
+        <!-- wrapper end -->
+        <!-- share-wrapper -->
+        <div class="share-wrapper isShare">
+            <div class="share-title"><span>Share</span></div>
+            <div class="close-share soa"><span>Close</span><i class="fal fa-times"></i></div>
+            <div class="share-inner soa">
+                <div class="share-container"></div>
             </div>
         </div>
-    </footer>
-    <!-- End Footer -->
-    <div class="dark-mark"></div>
-    <div id="fb-root"></div>
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId=449245312768740&autoLogAppEvents=1" nonce="Fx8ldU9x"></script>
-
-    <!-- Vendor JS-->
-    <script src="~/js/vendor/modernizr-3.5.0.min.js"></script>
-    <script src="~/js/vendor/jquery-3.5.1.min.js"></script>
-    <script src="~/js/vendor/jquery.cookie.js"></script>
-    <script src="~/js/vendor/popper.min.js"></script>
-    <script src="~/js/vendor/bootstrap.min.js"></script>
-    <script src="~/js/vendor/jquery.slicknav.js"></script>
-    <script src="~/js/vendor/slick.min.js"></script>
-    <script src="~/js/vendor/wow.min.js"></script>
-    <script src="~/js/vendor/jquery.ticker.js"></script>
-    <script src="~/js/vendor/jquery.vticker-min.js"></script>
-    <script src="~/js/vendor/jquery.scrollUp.min.js"></script>
-    <script src="~/js/vendor/jquery.nice-select.min.js"></script>
-    <script src="~/js/vendor/jquery.magnific-popup.js"></script>
-    <script src="~/js/vendor/jquery.sticky.js"></script>
-    <script src="~/js/vendor/perfect-scrollbar.js"></script>
-    <script src="~/js/vendor/waypoints.min.js"></script>
-    <script src="~/js/vendor/jquery.theia.sticky.js"></script>
-
-    <!-- Fancybox -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
-    <script src="https://cdn.jsdelivr.net/gh/fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js"></script>
-
-    <script src="https://www.google.com/recaptcha/api.js"></script>
-    <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
-    <!-- NewsBoard JS -->
-    <script src="~/js/main.js"></script>
-    @RenderSection("Scripts", required: false)
-    <script>
-        function LoadInstagramPost() {
-            var name = "theweeknd";
-            $.get("https://images" + ~~(Math.random() * 3333) + "-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https://www.instagram.com/" + name + "/", function (html) {
-                if (html) {
-                    var regex = /_sharedData = ({.*);<\/script>/m;
-                    json = JSON.parse(regex.exec(html)[1]);
-                    edges = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges;
-                    var html = "";
-
-                    $.each(edges, function (n, edge) {
-                        var node = edge.node;
-                        html += '<li><a data-fancybox="instagram" href="' + node.display_url + '"><img class="border-radius-5" src="' + node.thumbnail_src + '" alt=""></a></li>';
-                    });
-
-                    $(".insta-feed").hide().html(html).fadeIn('slow');
-                }
-            });
-
-            $("#btnLogOut").click(function () {
-                signOut();
-            });
-        }
-
-        function ConvertToPostDate(date) {
-            var tmpDate = '';
-            var postDate = '';
-
-            var monthString = ["giêng", "hai", "ba", "tư", "năm", "sáu", "bảy", "tám", "chín", "mười", "mười một", "mười hai"];
-
-            tmpDate = date.split("T")[0].split("-");
-            postDate = tmpDate[2] + " Tháng " + monthString[parseInt(tmpDate[1]) - 1];
-
-
-            return postDate;
-        }
-
-        function signOut() {
-            var auth2 = gapi.auth2.getAuthInstance();
-            auth2.signOut().then(function () {
-                console.log('User signed out.');
-            });
-        }
-
-        function onLoad() {
-            gapi.load('auth2', function () {
-                gapi.auth2.init();
-            });
-        }
-    </script>
+        <!-- share-wrapper end -->
+    </div>
+        <!--=============== scripts  ===============-->
+        <script type="text/javascript" src="~/js/jquery.min.js"></script>
+        <script type="text/javascript" src="~/js/plugins.js"></script>
+        <script type="text/javascript" src="~/js/scripts.js"></script>
+        @RenderSection("Scripts", required: false)
 </body>
 </html>
