@@ -18,5 +18,6 @@ namespace Stories.VM.Response
         public int Views { get; set; }
         public string Link { get; set; }
         public string Type { get; set; }
+        public List<string> Tags { get; set; }
     }
 }

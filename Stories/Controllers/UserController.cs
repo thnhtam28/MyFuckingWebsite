@@ -91,19 +91,19 @@ namespace Stories.Controllers
             return RedirectToAction("Index", "Blog");
         }
 
-        [Route("/Author/{username}")]
-        public async Task<IActionResult> Author(string username)
-        {
-            var model = new AuthorViewModel
-            {
-                User = await _userService.GetUserInfo(username),
-                Count = await _blogService.CountPost(1, username),
-                MostPopularPosts = await _blogService.GetMostPopularPosts(),
-                LastComments = await _blogService.GetLastComments()
-            };
+        //[Route("/Author/{username}")]
+        //public async Task<IActionResult> Author(string username)
+        //{
+        //    var model = new AuthorViewModel
+        //    {
+        //        User = await _userService.GetUserInfo(username),
+        //        Count = await _blogService.CountPost(1, username),
+        //        MostPopularPosts = await _blogService.GetMostPopularPosts(),
+        //        LastComments = await _blogService.GetLastComments()
+        //    };
 
-            return View(model);
-        }
+        //    return View(model);
+        //}
 
         [Authorize(Roles = "Admin")]
         [Route("/PageSetting")]
