@@ -1,0 +1,62 @@
+﻿@model IEnumerable<Stories.VM.Response.PostResponse>
+@{ 
+    string[] monthString = { "giêng", "hai", "ba", "tư", "năm", "sáu", "bảy", "tám", "chín", "mười", "mười một", "mười hai" };
+    string[] monthStringU = { "Giêng", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai" };
+}
+<div class="featured-slider-2">
+    <div class="featured-slider-2-items">
+        @foreach (var post in Model)
+        {
+            <div class="slider-single">
+                <div class="post-thumb position-relative">
+                    <div class="thumb-overlay position-relative" style="background-image: url(@post.ImageLink)">
+                        <div class="post-content-overlay">
+                            <div class="container">
+                                <div class="entry-meta meta-0 font-small mb-20">
+                                    <a href="/Blog/Category/@post.CategoryId" tabindex="0"><span class="post-cat @post.CategoryColor text-uppercase">@post.Category</span></a>
+                                </div>
+                                <h1 class="post-title mb-20 font-weight-900 text-white">
+                                    <a class="text-white" href="/Blog/Single/@post.Link" tabindex="0">@post.Title</a>
+                                </h1>
+                                <div class="entry-meta meta-1 font-small text-white mt-10 pr-5 pl-5">
+                                    <span class="post-on">@(post.CreatedDate.Day + " tháng " + monthStringU[post.CreatedDate.Month - 1])</span>
+                                    <span class="hit-count has-dot">@post.Views lượt xem</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+    <div class="container position-relative">
+        <div class="arrow-cover color-white"></div>
+        <div class="featured-slider-2-nav-cover">
+            <div class="featured-slider-2-nav">
+                @foreach (var post in Model)
+                {
+                    <div class="slider-post-thumb mr-15 mt-20 position-relative">
+                        <div class="d-flex hover-up-2 transition-normal">
+                            <div class="post-thumb post-thumb-80 d-flex mr-15 border-radius-5">
+                                <img class="border-radius-5" src="@post.ImageLink" alt="">
+                            </div>
+                            <div class="post-content media-body text-white">
+                                <h5 class="post-title mb-15 text-limit-2-row">@post.Title</h5>
+                                <div class="entry-meta meta-1 float-left font-x-small text-uppercase">
+                                    <span class="post-on text-white">@(post.CreatedDate.Day + " tháng " + monthString[post.CreatedDate.Month - 1])</span>
+                                    <span class="post-by has-dot text-white">@post.Views lượt xem</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>            
+                }
+            </div>
+        </div>
+    </div>
+</div>   
+<style>
+    .thumb-overlay.position-relative {
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+</style>

@@ -1,0 +1,321 @@
+﻿@model Stories.VM.AuthorViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    var User = Model.User;
+    ViewData["Title"] = (User.IsAuthor ? "Tác giả " : "Người dùng ") + User.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var MostPopularPosts = Model.MostPopularPosts;
+    var Count = (Model.Count % 8 > 1) ? Model.Count / 8 + 1 : Model.Count / 8;
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <!--author box-->
+            <div class="author-bio mb-50 bg-white p-30 border-radius-10">
+                <div class="author-image mb-30">
+                    <a href="/Author/@User.Username"><img src="@User.Avatar" alt="" class="avatar"></a>
+                </div>
+                <div class="author-info">
+                    <h3 class="font-weight-900">
+                        <span class="vcard author"><span class="fn"><a href="/Author/@User.Username" title="Posts by @User.Name" rel="author">@User.Name</a></span></span>
+                    </h3>
+                    <h5 class="text-muted">Về @(User.IsAuthor ? "tác giả" : "người dùng")</h5>
+                    <div class="author-description text-muted">
+                        @User.Description
+                    </div>
+                    @if (!string.IsNullOrEmpty(User.Facebook) && !string.IsNullOrEmpty(User.Twitter) && !string.IsNullOrEmpty(User.Pinterest) && !string.IsNullOrEmpty(User.Instagram))
+                    {
+                        <strong class="text-muted">Theo dõi: </strong>
+                        <ul class="header-social-network d-inline-block list-inline color-white mb-20">
+                            @if (!string.IsNullOrEmpty(User.Facebook))
+                            {
+                                <li class="list-inline-item"><a class="fb" href="@User.Facebook" target="_blank" title="Facebook"><i class="elegant-icon social_facebook"></i></a></li>
+                            }
+                            @if (!string.IsNullOrEmpty(User.Instagram))
+                            {
+                                <li class="list-inline-item"><a class="is" href="@User.Instagram" target="_blank" title="Instagram"><i class="elegant-icon social_instagram"></i></a></li>
+                            }
+                            @if (!string.IsNullOrEmpty(User.Twitter))
+                            {
+                                <li class="list-inline-item"><a class="tw" href="@User.Twitter" target="_blank" title="Twitter"><i class="elegant-icon social_twitter"></i></a></li>
+                            }
+                            @if (!string.IsNullOrEmpty(User.Pinterest))
+                            {
+                                <li class="list-inline-item"><a class="pt" href="@User.Pinterest" target="_blank" title="Pinterest"><i class="elegant-icon social_pinterest"></i></a></li>
+                            }
+                        </ul>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-8">
+            @if (User.IsAuthor)
+            {
+                <div class="post-module-2">
+                    <div class="widget-header-2 position-relative mb-30 wow fadeInUp animated">
+                        <h5 class="mt-5 mb-30">Bài viết bởi @User.Name</h5>
+                    </div>
+                    <div class="loop-list loop-list-style-1" id="divHead">
+                        <div class="row" id="author-post-page-1">
+                        </div>
+                    </div>
+                </div>
+                <div class="post-module-3">
+                    <div class="loop-list loop-list-style-1" id="authorPosts">
+                    </div>
+                </div>
+                <div class="pagination-area mb-30 wow fadeInUp animated">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            @if (Count > 1)
+                            {
+                                <li class="page-item"><a class="page-link"><i class="elegant-icon arrow_left"></i></a></li>
+                            }
+                            @for (int i = 1; i <= Count; i++)
+                            {
+                                <li class="page-item@(i == 1 ? " active" : "")"><a class="page-link">@(i < 10 ? ("0" + i) : i + "")</a></li>
+                            }
+                            @if (Count > 1)
+                            {
+                                <li class="page-item"><a class="page-link"><i class="elegant-icon arrow_right"></i></a></li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            }
+        </div>
+        <div class="col-lg-4 primary-sidebar sticky-sidebar">
+            <div class="widget-area">
+                <div class="sidebar-widget widget-latest-posts mb-50 wow fadeInUp animated">
+                    <div class="widget-header-2 position-relative mb-30">
+                        <h5 class="mt-5 mb-30">Phổ biến nhất</h5>
+                    </div>
+                    <div class="post-block-list post-module-1">
+                        <ul class="list-post">
+                            @foreach (var post in MostPopularPosts)
+                            {
+                                <li class="mb-30 wow fadeInUp animated">
+                                    <div class="d-flex bg-white has-border p-25 hover-up transition-normal border-radius-5">
+                                        <div class="post-content media-body">
+                                            <h6 class="post-title mb-15 text-limit-2-row font-medium"><a href="/Blog/Single/@post.Link">@(post.Title.Length > 50 ? (post.Title.Substring(0, Math.Min(post.Title.Length, 47)) + "...") : post.Title)</a></h6>
+                                            <div class="entry-meta meta-1 float-left font-x-small text-uppercase">
+                                                <span class="post-on">@(post.CreatedDate.ToString("dd/MM").Replace("/", " tháng "))</span>
+                                                <span class="post-by has-dot">@post.Views lượt xem</span>
+                                            </div>
+                                        </div>
+                                        <div class="post-thumb post-thumb-80 d-flex ml-15 border-radius-5 img-hover-scale overflow-hidden">
+                                            <a class="color-white" href="/Blog/Single/@post.Link">
+                                                <img src="@post.ImageLink" alt="">
+                                            </a>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-widget widget-latest-posts mb-50 wow fadeInUp animated">
+                    <div class="widget-header-2 position-relative mb-30">
+                        <h5 class="mt-5 mb-30">Bình luận mới nhất</h5>
+                    </div>
+                    <div class="post-block-list post-module-2">
+                        <ul class="list-post">
+                            @foreach (var cmt in Model.LastComments)
+                            {
+                                <li class="mb-30 wow fadeInUp animated">
+                                    <div class="d-flex bg-white has-border p-25 hover-up transition-normal border-radius-5">
+                                        <div class="post-thumb post-thumb-64 d-flex mr-15 border-radius-5 img-hover-scale overflow-hidden">
+                                            <a class="color-white" href="/Blog/Single/@cmt.PostLink">
+                                                <img src="@cmt.Avatar" alt="">
+                                            </a>
+                                        </div>
+                                        <div class="post-content media-body">
+                                            <p class="mb-10">
+                                                <a href="@(!string.IsNullOrEmpty(cmt.Username) ? "/Author/" + cmt.Username : "#")"><strong>@cmt.Name</strong></a>
+                                                <span class="ml-15 font-small text-muted has-dot">@(cmt.CreatedDate.Day + " tháng " + cmt.CreatedDate.Month)</span>
+                                            </p>
+                                            <p class="text-muted font-small">@(cmt.Content.Length < 60 ? cmt.Content : cmt.Content.Substring(0, Math.Min(57, cmt.Content.Length)) + "...")</p>
+                                        </div>
+                                    </div>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="sidebar-widget widget_instagram wow fadeInUp animated">
+                    <div class="widget-header-2 position-relative mb-30">
+                        <h5 class="mt-5 mb-30">Instagram</h5>
+                    </div>
+                    <div class="instagram-gellay">
+                        <ul class="insta-feed">
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var PAGENOW = 1;
+            var PAGEMAX = @Count;
+            $("main").addClass("bg-grey pt-80 pb-50");
+            $("footer").toggleClass("bg-grey");
+            setTimeout(function () {
+                LoadAuthorPosts(PAGENOW);
+            }, 500);
+            LoadInstagramPost();
+
+            $(".page-link").click(function () {
+                if (!$(this).find("i").length) {
+                    PAGENOW = parseInt($(this).html())
+                }
+                else {
+                    var i = $(this).find("i");
+                    if (i.hasClass("arrow_right")) {
+                        if (PAGENOW != PAGEMAX) {
+                            PAGENOW++;
+                        }
+                    }
+                    else {
+                        if (PAGENOW != 1) {
+                            PAGENOW--;
+                        }
+                    }
+                }
+
+                LoadAuthorPosts(PAGENOW);
+                $('html, body').animate({
+                    scrollTop: $(".post-module-2").offset().top - 80
+                }, 1000);
+            });
+        });
+
+        function LoadAuthorPosts(PAGENOW) {
+            $.ajax({
+                url: "/Blog/GetAuthorPosts",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    username: '@User.Username',
+                    pageNumber: PAGENOW
+                },
+                success: function (data) {
+                    var head = '';
+                    var html = '';
+
+                    $(data).each(function (index, post) {
+                        if (PAGENOW == 1) {
+                            if (index < 2) {
+                                var link = '@Configuration["AppSetting:HostURL"]/Blog/Single/' + post.link;
+                                var ev = "'width=500,height=500,top=300px,left=300px'";
+
+                                head += '<article class="col-md-6 mb-40 wow fadeInUp animated">'
+                                    + '<div class="post-card-1 border-radius-10 hover-up">'
+                                    + '<div class="post-thumb thumb-overlay img-hover-slide position-relative" style="background-image: url(' + post.imageLink + ')">'
+                                    + '<a class="img-link" href="/Blog/Single/' + post.link + '"></a>';
+
+                                if (post.type != null && post.type != "") {
+                                    head += '<span class="top-left-icon bg-' + (post.type == "heart" ? "secondary" : post.type == "camera" ? "success" : post.type == "headphones" ? "info" : post.type == "star" ? "warning" : "danger") + '">'
+                                        + '<i class="elegant-icon icon_' + post.type + '" ></i>'
+                                        + '</span > ';
+                                }
+
+                                head += '<ul class="social-share">'
+                                    + '<li><a href="#"><i class="elegant-icon social_share"></i></a></li>'
+                                    + '<li><a class="fb" href="//www.facebook.com/sharer/sharer.php?u=https://' + link + '" title="Chia sẻ lên Facebook" target="_blank" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_facebook"></i></a></li>'
+                                    + '<li><a class="tw" href="//twitter.com/share?url=https://' + link + '" target="_blank" title="Tweet now" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_twitter"></i></a></li>'
+                                    + '<li><a class="pt" href="//pinterest.com/pin/create/button/?url=' + link + '" target="_blank" title="Pin it" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_pinterest"></i></a></li>'
+                                    + '</ul>'
+                                    + '</div>'
+                                    + '<div class="post-content p-30">'
+                                    + '<div class="entry-meta meta-0 font-small mb-10">'
+                                    + '<a href="/Blog/Category/' + post.categoryId + '"><span class="post-cat ' + post.categoryColor + '">' + post.category + '</span></a>'
+                                    + '</div>'
+                                    + '<div class="d-flex post-card-content">'
+                                    + '<h5 class="post-title mb-20 font-weight-900">'
+                                    + '<a href="/Blog/Single/' + post.link + '">' + post.title + '</a>'
+                                    + '</h5>'
+                                    + '<div class="post-excerpt mb-25 font-small text-muted">'
+                                    + '<p>' + (post.content.length > 155 ? post.content.substr(0, post.content.lastIndexOf(' ', 152)) + '...' : post.content) + '</p>'
+                                    + '</div>'
+                                    + '<div class="entry-meta meta-1 float-left font-x-small text-uppercase">'
+                                    + '<span class="post-on">' + ConvertToPostDate(post.createdDate) + '</span>'
+                                    + '<span class="time-reading has-dot">' + post.readMinute + ' phút đọc</span>'
+                                    + '<span class="post-by has-dot">' + post.views + ' lượt xem</span>'
+                                    + '</div>'
+                                    + '</div>'
+                                    + '</div>'
+                                    + '</div>'
+                                    + '</article>';
+                            } else {
+                                html += RenderHtml(post);
+                            }
+                        } else {
+                            html += RenderHtml(post);
+                        }
+                    });
+
+                    if (PAGENOW == 1) {
+                        $("#divHead").show();
+                        $("#author-post-page-1").html(head);
+                    } else {
+                        $("#divHead").hide();
+                    }
+                    $("#authorPosts").html(html);
+                    $(".page-item").removeClass("active");
+                    $(".page-link:contains(" + PAGENOW + ")").parent().addClass("active");
+                }
+            });
+        }
+
+        function RenderHtml(post) {
+            var link = '@Configuration["AppSetting:HostURL"]/Blog/Single/' + post.link;
+            var ev = "'width=500,height=500,top=300px,left=300px'";
+
+            return '<article class="hover-up-2 transition-normal wow fadeInUp animated">'
+                + '<div class="row mb-40 list-style-2">'
+                + '<div class="col-md-4">'
+                + '<div class="post-thumb position-relative border-radius-5">'
+                + '<div class="img-hover-slide border-radius-5 position-relative" style="background-image: url(' + post.imageLink + ')">'
+                + '<a class="img-link" href="/Blog/Single/' + post.link + '"></a>'
+                + '</div>'
+                + '<ul class="social-share">'
+                + '<li><a href="#"><i class="elegant-icon social_share"></i></a></li>'
+                + '<li><a class="fb" href="//www.facebook.com/sharer/sharer.php?u=https://' + link + '" title="Chia sẻ lên Facebook" target="_blank" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_facebook"></i></a></li>'
+                + '<li><a class="tw" href="//twitter.com/share?url=https://' + link + '" target="_blank" title="Tweet now" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_twitter"></i></a></li>'
+                + '<li><a class="pt" href="//pinterest.com/pin/create/button/?url=' + link + '" target="_blank" title="Pin it" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_pinterest"></i></a></li>'
+                + '</ul>'
+                + '</div>'
+                + '</div>'
+                + '<div class="col-md-8 align-self-center">'
+                + '<div class="post-content">'
+                + '<div class="entry-meta meta-0 font-small mb-10">'
+                + '<a href="/Blog/Category/' + post.categoryId + '"><span class="post-cat ' + post.categoryColor + '">' + post.category + '</span></a>'
+                + '</div>'
+                + '<h5 class="post-title font-weight-900 mb-20">'
+                + '<a href="/Blog/Single/' + post.link + '">' + post.title + '</a>'
+                + '</h5>'
+                + '<div class="entry-meta meta-1 float-left font-x-small text-uppercase">'
+                + '<span class="post-on">' + ConvertToPostDate(post.createdDate) + '</span>'
+                + '<span class="time-reading has-dot">' + post.readMinute + ' phút đọc</span>'
+                + '<span class="post-by has-dot">' + post.views + ' Lượt xem</span>'
+                + '</div>'
+                + '</div>'
+                + '</div>'
+                + '</div>'
+                + '</article>';
+        }
+    </script>
+}
+
+<style>
+    .author-info strong {
+        margin-right: 8px;
+    }
+</style>

@@ -1,0 +1,288 @@
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+@{
+    ViewData["Title"] = "Create Post";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+<div class="row">
+    <div class="col-3"></div>
+    <div class="col-6">
+        <h1>Tạo mới bài viết</h1>
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Tiêu đề</label>
+            <input type="text" id="title" class="form-control" placeholder="Tiêu đề" />
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Nội dung</label>
+            <button type="button" class="btn btn-primary" style="float: right;margin-bottom: 9px;" data-toggle="modal" data-target="#uploadModal" disabled id="btnTriggerAddImage">Thêm ảnh</button>
+            <textarea id="content" class="form-control" placeholder="Nội dung" rows="8"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Danh mục</label>
+            <select id="category-id" class="form-control"></select>
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Thumb</label>
+            <div style="height:46px">
+                <form id="upload_form" enctype="multipart/form-data" style="display:inline;float:left">
+                    <input name="file" type="file" id="cloudinary-fileupload" accept="image/x-png,image/gif,image/jpeg" style="margin-top:6px" />
+                </form>
+                <button id="upload" type="button" class="btn btn-primary" style="float:right">Upload</button>
+            </div>
+            <input type="text" id="image-link" class="form-control" placeholder="Paste link ảnh vào đây hoặc upload ở trên" />
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1" style="display:block">Tag</label>
+            <input type="text" id="tag" class="form-control" data-role="tagsinput" />
+        </div>
+
+        <div class="form-group">
+            <label for="exampleFormControlFile1">Type</label>
+            <select id="type" class="form-control">
+                <option value="">Không</option>
+                <option value="star">Star</option>
+                <option value="camera">Ảnh chụp</option>
+                <option value="image">Hình ảnh</option>
+                <option value="headphones">Âm nhạc</option>
+                <option value="heart">Heart</option>
+            </select>
+        </div>
+
+        <div class="form-check" style="margin-bottom: 1rem">
+            <input type="checkbox" class="form-check-input" id="featured">
+            <label class="form-check-label" for="featured">Tiêu điểm</label>
+        </div>
+
+        <button type="button" class="btn btn-primary" id="createPost">Submit</button>
+    </div>
+    <div class="col-3"></div>
+</div>
+
+<div class="modal" id="loadingModal"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Thêm ảnh vào bài viết</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Ảnh</label>
+                    <div style="height:46px">
+                        <form id="modal_upload_form" enctype="multipart/form-data" style="display:inline;float:left">
+                            <input name="file" type="file" id="modal_cloudinary-fileupload" accept="image/x-png,image/gif,image/jpeg" style="margin-top:6px" />
+                        </form>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlFile1">Caption</label>
+                    <input type="text" id="image-caption" class="form-control" placeholder="Caption ảnh" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Đóng</button>
+                <button type="button" class="btn btn-primary" id="addImageModal">Thêm ảnh</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        var cloudName = '@Configuration["AppSetting:CloudName"]';
+        var apiKey = '@Configuration["AppSetting:APIKey"]';
+        var uploadPreset = '@Configuration["AppSetting:UploadPreset"]';
+        //$("#content").val("<p></p>");
+        //var editor = CodeMirror.fromTextArea(document.getElementById('content'), {
+        //    lineNumbers: true,
+        //    mode: "htmlmixed",
+        //    htmlMode: true,
+        //    tabMode: 'indent',
+        //    autoCloseTags: true
+        //});
+
+        $(document).ready(function () {
+            $('#tag').tagsinput();
+            LoadCategories();
+
+            $("#upload").click(function () {
+                var formData = new FormData(document.getElementById("upload_form"));
+
+                if ($('#cloudinary-fileupload').get(0).files.length === 0) {
+                    iziToast.warning({
+                        title: 'Caution',
+                        message: 'Vui lòng chọn file ảnh!',
+                    });
+                } else {
+                    $.ajax({
+                        url: "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload?api_key=" + apiKey + "&upload_preset=" + uploadPreset,
+                        method: 'POST',
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            iziToast.success({
+                                title: 'Upload ảnh thành công',
+                                message: 'Đường dẫn: ' + data.secure_url,
+                            });
+
+                            $("#cloudinary-fileupload").val("");
+                            $("#cloudinary-fileupload").attr("disabled", true);
+                            $("#upload").attr("disabled", true);
+                            $("#image-link").val(data.secure_url);
+                            $("#image-link").attr("disabled", true);
+                        },
+                        error: function (data) {
+                            iziToast.error({
+                                title: 'Upload ảnh không thành công',
+                                message: 'Lỗi: ' + data.responseJSON.error.message,
+                            });
+                        }
+                    });
+                }
+            });
+
+            $("#createPost").click(function () {
+                if ($("input").val() == "" || $("textarea").val() == "") {
+                    iziToast.warning({
+                        title: 'Caution',
+                        message: 'Nhập không đủ đòi thêm cl!',
+                    });
+                }
+                else {
+                    var post = {
+                        Title: $("#title").val(),
+                        Content: $("#content").val(),
+                        AuthorId: "@User.Claims.FirstOrDefault(c => c.Type == "Id").Value",
+                        CategoryId: $("#category-id").val(),
+                        ImageLink: $("#image-link").val(),
+                        Tag: $("#tag").tagsinput('items').join(" "),
+                        Type: $("#type").val(),
+                        Featured: $('#featured').is(":checked")
+                    };
+
+                    $.ajax({
+                        url: "/Blog/CreatePost",
+                        method: "POST",
+                        dataType: "json",
+                        data: {
+                            request: post
+                        },
+                        success: function (data) {
+                            $("input").val("");
+                            $("textarea").val("");
+                            $(".bootstrap-tagsinput").html('<input type="text" placeholder="" size="1">');
+
+                            iziToast.success({
+                                title: '',
+                                message: 'Thêm mới bài viết thành công!',
+                            });
+                        }
+                    });
+                }
+
+            });
+
+            $(document).on('keydown', '.bootstrap-tagsinput input', function (e) {
+                if (e.keyCode == 32) {
+                    var ev = $.Event("keypress", { which: 13 });
+                    $('.bootstrap-tagsinput input').trigger(ev);
+                    return false;
+                }
+            });
+
+            $("#addImageModal").click(function () {
+                var imageCaption = $("#image-caption").val();
+
+                if ($('#modal_cloudinary-fileupload').get(0).files.length === 0) {
+                    iziToast.warning({
+                        title: 'Caution',
+                        message: 'Vui lòng chọn file ảnh!',
+                    });
+                } else {
+                    var formData = new FormData(document.getElementById("modal_upload_form"));
+
+                    $.ajax({
+                        url: "https://api.cloudinary.com/v1_1/" + cloudName + "/image/upload?api_key=" + apiKey + "&upload_preset=" + uploadPreset,
+                        method: 'POST',
+                        data: formData,
+                        cache: false,
+                        contentType: false,
+                        processData: false,
+                        success: function (data) {
+                            iziToast.success({
+                                title: 'Upload ảnh thành công',
+                                message: 'Đường dẫn: ' + data.secure_url,
+                            });
+                            $("#modal_cloudinary-fileupload").val("");
+                            $("#uploadModal").modal("hide");
+                            $("#image-caption").val("");
+                            var content = $("#content").val();
+                            $("#content").val(content + "\n\n" + '<figure class="image m-auto text-center border-radius-10">'
+                                + '<img class="border-radius-10" src="' + data.secure_url + '" alt="post-title">'
+                                + (imageCaption ? ('<figcaption>' + imageCaption + '</figcaption>') : '') + '</figure>');
+                            uploadedImage = '';
+                            $("#content").focus();
+                        },
+                        error: function (data) {
+                            iziToast.error({
+                                title: 'Upload ảnh không thành công',
+                                message: 'Lỗi: ' + data.responseJSON.error.message,
+                            });
+                        }
+                    });
+                }
+            });
+
+            $("#content").on('change keyup paste', function () {
+                if ($(this).val().trim().length > 50) {
+                    $("#btnTriggerAddImage").removeAttr("disabled");
+                } else {
+                    $("#btnTriggerAddImage").attr("disabled", true);
+                }
+            });
+        });
+
+        window.addEventListener('beforeunload', function (e) {
+            if ($("input").val() != "" || $("textarea").val() != "") {
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
+
+        $(document)
+            .ajaxStart(function () {
+                $('#loadingModal').show();
+            })
+            .ajaxStop(function () {
+                $('#loadingModal').hide();
+            });
+
+        function LoadCategories() {
+            $.ajax({
+                url: "/Blog/GetCategories",
+                method: "GET",
+                dataType: "json",
+                success: function (data) {
+                    var html = "";
+                    $(data).each(function (index, cat) {
+                        html += "<option value='" + cat.id + "'>" + cat.name + "</option>";
+                    });
+                    $("#category-id").html(html);
+                }
+            });
+        }
+    </script>
+}

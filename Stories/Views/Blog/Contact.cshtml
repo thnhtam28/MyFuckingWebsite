@@ -1,0 +1,128 @@
+﻿
+@{
+    ViewData["Title"] = "Contact";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="entry-header entry-header-style-2 pb-80 pt-80 mb-50 text-white" style="background-image: url(/imgs/news/news-17.jpg)">
+    <div class="container entry-header-content">
+        <h1 class="entry-title mb-50 font-weight-900">
+            Get in Touch
+        </h1>
+    </div>
+</div>
+<div class="container single-content">
+    <div class="entry-wraper mt-50">
+        <p class="font-large">
+            We are BLΛƆK Crew, a creative and dedicated group of individuals who love web development almost as much as we love our customers.
+            We are passionate team with the mission for achieving the perfection in web design.
+            All designs are made by love with pixel perfect design and excellent coding quality. Speed, security and SEO friendly alway in our mind.
+        </p>
+        <hr class="wp-block-separator is-style-wide">
+        <p>
+            <span class="mr-5">
+                <ion-icon name="location-outline" role="img" class="md hydrated" aria-label="location outline"></ion-icon>
+            </span><strong>Address</strong>: Lorem 142 Str., 2352, Ipsum, State, USA
+        </p>
+        <p>
+            <span class="mr-5">
+                <ion-icon name="home-outline" role="img" class="md hydrated" aria-label="home outline"></ion-icon>
+            </span><strong>Our website</strong>: <a href="../../../index.htm"></a>
+        </p>
+        <p>
+            <span class="mr-5">
+                <ion-icon name="planet-outline" role="img" class="md hydrated" aria-label="planet outline"></ion-icon>
+            </span><strong>Support center</strong>: <a href="../../../index-1.htm"></a>
+        </p>
+        <h3 class="mt-30">Advertise</h3>
+        <hr class="wp-block-separator is-style-wide">
+        <p>Please contact us directly at <a href="" class="__cf_email__" data-cfemail="f1909582b1849d8583909f948682df929e9cdf">[email&#160;protected]</a> For large or unique campaigns please email <a href="" class="__cf_email__" data-cfemail="84f7e5e8e1c4f1e8f0f6e5eae1f3f7aae7ebe9">[email&#160;protected]</a> for requests-for-proposal and additional pricing information. </p>
+        <h1 class="mt-30">Get in touch</h1>
+        <hr class="wp-block-separator is-style-wide">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input class="form-control" name="name" id="name" type="text" placeholder="Name">
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="form-group">
+                    <input class="form-control" name="email" id="email" type="email" placeholder="Email">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <input class="form-control" name="phone" id="phone" type="text" placeholder="Phone">
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="form-group">
+                    <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" placeholder="Message"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <button type="button" class="button button-contactForm">Send message</button>
+        </div>
+    </div>
+</div>
+<!--container-->
+@section Scripts {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/css/iziToast.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/izitoast/1.4.0/js/iziToast.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("main").addClass("bg-grey pt-80 pb-50");
+            $("footer").toggleClass("bg-grey");
+
+            $(".__cf_email__").click(function (e) {
+                if ($(this).text() == "thnhtam28@gmail.com") {
+                    $(".__cf_email__").attr("href", "mailto:thnhtam28@gmail.com");
+                }
+                else {
+                    e.preventDefault();
+                }
+                $(".__cf_email__").text("thnhtam28@gmail.com");
+            });
+
+            $(".button-contactForm").click(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: "https://formspree.io/f/xqkgnkqw",
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        name: $("#name").val(),
+                        email: $("#email").val(),
+                        phone: $("#phone").val(),
+                        message: $("#message").val()
+
+                    },
+                    success: function (data) {
+                        iziToast.success({
+                            title: 'Success',
+                            message: '',
+                        });
+                        $("input").val("");
+                        $("textarea").val("");
+                    },
+                    error: function (error) {
+                        iziToast.error({
+                            title: 'Failed to Send Message',
+                            message: 'Error: ' + error,
+                        });
+                    }
+                });
+            });
+        });
+
+        $(document)
+            .ajaxStart(function () {
+                $('.preloader').show();
+            })
+            .ajaxStop(function () {
+                $('.preloader').hide();
+            });
+    </script>
+}

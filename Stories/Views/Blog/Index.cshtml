@@ -1,0 +1,366 @@
+﻿@model Stories.VM.HomePageViewModel
+
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Blog bởi Lê Võ Thành Tâm";
+    string[] monthString = { "giêng", "hai", "ba", "tư", "năm", "sáu", "bảy", "tám", "chín", "mười", "mười một", "mười hai" };
+    string[] monthStringU = { "Giêng", "Hai", "Ba", "Tư", "Năm", "Sáu", "Bảy", "Tám", "Chín", "Mười", "Mười một", "Mười hai" };
+    var postSlick = Model.FeaturedPosts.Skip(0).Take(4);
+    var postSlide = Model.FeaturedPosts.Skip(4).Take(4);
+    var postArticle = Model.FeaturedPosts.Skip(8).Take(4);
+}
+
+@{
+    await Html.RenderPartialAsync("_Featured2", postSlick);
+}
+<div class="container">
+    <div class="hot-tags pt-30 pb-30 font-small align-self-center">
+        <div class="widget-header-3">
+            <div class="row align-self-center">
+                <div class="col-md-4 align-self-center">
+                    <h5 class="widget-title">Tiêu điểm</h5>
+                </div>
+                <div class="col-md-8 text-md-right font-small align-self-center">
+                    <p class="d-inline-block mr-5 mb-0"><i class="elegant-icon icon_tag_alt mr-5 text-muted"></i>Hot tags:</p>
+                    <ul class="list-inline d-inline-block tags">
+                        @foreach (var tag in Model.HotTags)
+                        {
+                            <li class="list-inline-item"><a href="/Blog/Tag/@tag">#@tag</a></li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loop-grid mb-30">
+        <div class="row">
+            <div class="col-lg-8 mb-30">
+                <div class="carausel-post-1 hover-up border-radius-10 overflow-hidden transition-normal position-relative wow fadeInUp animated">
+                    <div class="arrow-cover"></div>
+                    <div class="slide-fade">
+                        @foreach (var post in postSlide)
+                        {
+                            <div class="position-relative post-thumb">
+                                <div class="thumb-overlay img-hover-slide position-relative" style="background-image: url(@post.ImageLink)">
+                                    <a class="img-link" href="/Blog/Single/@post.Link"></a>
+                                    @{
+                                        if (!string.IsNullOrEmpty(post.Type))
+                                        {
+                                            <span class="top-right-icon bg-@(post.Type == "heart" ? "secondary" : post.Type == "camera" ? "success" : post.Type == "headphones" ? "info" : post.Type == "star" ? "warning" : "danger")">
+                                                <i class="elegant-icon icon_@(post.Type)"></i>
+                                            </span>
+                                        }
+                                    }
+                                    <div class="post-content-overlay text-white ml-30 mr-30 pb-30">
+                                        <div class="entry-meta meta-0 font-small mb-20">
+                                            <a href="/Blog/Category/@post.CategoryId"><span class="post-cat @post.CategoryColor text-uppercase">@post.Category</span></a>
+                                        </div>
+                                        <h3 class="post-title font-weight-900 mb-20">
+                                            <a class="text-white" href="/Blog/Single/@post.Link">@post.Title</a>
+                                        </h3>
+                                        <div class="entry-meta meta-1 font-small text-white mt-10 pr-5 pl-5">
+                                            <span class="post-on">@(post.CreatedDate.Day + " tháng " + monthStringU[post.CreatedDate.Month - 1])</span>
+                                            <span class="hit-count has-dot">@post.Views lượt xem</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+            @foreach (var post in postArticle)
+            {
+                var link = Configuration["AppSetting:HostURL"] + "/Blog/Single/" + post.Link;
+                <article class="col-lg-4 col-md-6 mb-30 wow fadeInUp animated">
+                    <div class="post-card-1 border-radius-10 hover-up">
+                        <div class="post-thumb thumb-overlay img-hover-slide position-relative" style="background-image: url(@post.ImageLink)">
+                            <a class="img-link" href="/Blog/Single/@post.Link"></a>
+                            @{
+                                if (!string.IsNullOrEmpty(post.Type))
+                                {
+                                    <span class="top-right-icon bg-@(post.Type == "heart" ? "secondary" : post.Type == "camera" ? "success" : post.Type == "headphones" ? "info" : post.Type == "star" ? "warning" : "danger")">
+                                        <i class="elegant-icon icon_@(post.Type)"></i>
+                                    </span>
+                                }
+                            }
+                            <ul class="social-share">
+                                <li><a href="#"><i class="elegant-icon social_share"></i></a></li>
+                                <li><a class="fb" href="//www.facebook.com/sharer/sharer.php?u=https://@link" title="Chia sẻ lên Facebook" target="_blank" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_facebook"></i></a></li>
+                                <li><a class="tw" href="//twitter.com/share?url=https://@link" target="_blank" title="Tweet now" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_twitter"></i></a></li>
+                                <li><a class="pt" href="//pinterest.com/pin/create/button/?url=@link" target="_blank" title="Pin it" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_pinterest"></i></a></li>
+                            </ul>
+                        </div>
+                        <div class="post-content p-30">
+                            <div class="entry-meta meta-0 font-small mb-10">
+                                <a href="/Blog/Category/@post.CategoryId"><span class="post-cat @post.CategoryColor">@post.Category</span></a>
+                            </div>
+                            <div class="d-flex post-card-content">
+                                <h5 class="post-title mb-20 font-weight-900">
+                                    <a href="/Blog/Single/@post.Link">@post.Title</a>
+                                </h5>
+                                <div class="entry-meta meta-1 float-left font-x-small text-uppercase">
+                                    <span class="post-on">@(post.CreatedDate.Day + " tháng " + monthString[post.CreatedDate.Month - 1])</span>
+                                    <span class="time-reading has-dot">@post.ReadMinute phút đọc</span>
+                                    <span class="post-by has-dot">@post.Views lượt xem</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            }
+        </div>
+    </div>
+</div>
+<div class="bg-grey pt-50 pb-50">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="post-module-2">
+                    <div class="widget-header-1 position-relative mb-30 wow fadeInUp animated">
+                        <h5 class="mt-5 mb-30">@Model.RandomCategoryPosts[0].Category</h5>
+                    </div>
+                    <div class="loop-list loop-list-style-1">
+                        <div class="row">
+                            @foreach (var post in Model.RandomCategoryPosts)
+                            {
+                                var link = Configuration["AppSetting:HostURL"] + "/Blog/Single/" + post.Link;
+                                <article class="col-md-6 mb-40 wow fadeInUp animated">
+                                    <div class="post-card-1 border-radius-10 hover-up">
+                                        <div class="post-thumb thumb-overlay img-hover-slide position-relative" style="background-image: url(@post.ImageLink)">
+                                            <a class="img-link" href="/Blog/Single/@post.Link"></a>
+                                            @{
+                                                if (!string.IsNullOrEmpty(post.Type))
+                                                {
+                                                    <span class="top-right-icon bg-@(post.Type == "heart" ? "secondary" : post.Type == "camera" ? "success" : post.Type == "headphones" ? "info" : post.Type == "star" ? "warning" : "danger")">
+                                                        <i class="elegant-icon icon_@(post.Type)"></i>
+                                                    </span>
+                                                }
+                                            }
+                                            <ul class="social-share">
+                                                <li><a href="#"><i class="elegant-icon social_share"></i></a></li>
+                                                <li><a class="fb" href="//www.facebook.com/sharer/sharer.php?u=https://@link" title="Chia sẻ lên Facebook" target="_blank" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_facebook"></i></a></li>
+                                                <li><a class="tw" href="//twitter.com/share?url=https://@link" target="_blank" title="Tweet now" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_twitter"></i></a></li>
+                                                <li><a class="pt" href="//pinterest.com/pin/create/button/?url=@link" target="_blank" title="Pin it" onclick="window.open(this.href,this.title,'width=500,height=500,top=300px,left=300px'); return false;"><i class="elegant-icon social_pinterest"></i></a></li>
+                                            </ul>
+                                        </div>
+                                        <div class="post-content p-30">
+                                            <div class="entry-meta meta-0 font-small mb-10">
+                                                <a href="/Blog/Category/@post.CategoryId"><span class="post-cat @post.CategoryColor">@post.Category</span></a>
+                                            </div>
+                                            <div class="d-flex post-card-content">
+                                                <h5 class="post-title mb-20 font-weight-900">
+                                                    <a href="/Blog/Single/@post.Link">@post.Title</a>
+                                                </h5>
+                                                <div class="post-excerpt mb-25 font-small text-muted">
+                                                    <p>@(post.Content.Length < 160 ? post.Content : post.Content.Substring(0, Math.Min(157, post.Content.Length)) + "...")</p>
+                                                </div>
+                                                <div class="entry-meta meta-1 float-left font-x-small text-uppercase">
+                                                    <span class="post-on">@(post.CreatedDate.Day + " tháng " + monthString[post.CreatedDate.Month - 1])</span>
+                                                    <span class="time-reading has-dot">@post.ReadMinute phút đọc</span>
+                                                    <span class="post-by has-dot">@post.Views lượt xem</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </article>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="post-module-3">
+                    <div class="widget-header-1 position-relative mb-30">
+                        <h5 class="mt-5 mb-30">Bài viết mới nhất</h5>
+                    </div>
+                    <div class="loop-list loop-list-style-1" id="latestPost">
+
+
+
+                    </div>
+                </div>
+                <div class="pagination-area mb-30 wow fadeInUp animated">
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-start">
+                            <li class="page-item"><a class="page-link"><i class="elegant-icon arrow_left"></i></a></li>
+                            <li class="page-item active"><a class="page-link">1</a></li>
+                            <li class="page-item"><a class="page-link">2</a></li>
+                            <li class="page-item"><a class="page-link">3</a></li>
+                            <li class="page-item"><a class="page-link">4</a></li>
+                            <li class="page-item"><a class="page-link"><i class="elegant-icon arrow_right"></i></a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="widget-area">
+                    <div class="sidebar-widget widget-about mb-50 border-radius-5 has-border wow fadeInUp animated">
+                        <div class="fb-page" data-href="https://www.facebook.com/BLACKCrewNeverSurrender/" data-tabs="" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                            <blockquote cite="https://www.facebook.com/BLACKCrewNeverSurrender/" class="fb-xfbml-parse-ignore">
+                                <a href="https://www.facebook.com/BLACKCrewNeverSurrender/">ＫＸＧＥ Presents BLΛƆK Crew</a>
+                            </blockquote>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget widget-latest-posts mb-50 wow fadeInUp animated">
+                        <div class="widget-header-1 position-relative mb-30">
+                            <h5 class="mt-5 mb-30">Phổ biến nhất</h5>
+                        </div>
+                        <div class="post-block-list post-module-1">
+                            <ul class="list-post">
+                                @foreach (var post in Model.MostPopularPosts)
+                                {
+                                    <li class="mb-30 wow fadeInUp animated">
+                                        <div class="d-flex bg-white has-border p-25 hover-up transition-normal border-radius-5">
+                                            <div class="post-content media-body">
+                                                <h6 class="post-title mb-15 text-limit-2-row font-medium"><a href="/Blog/Single/@post.Link">@(post.Title.Length > 50 ? (post.Title.Substring(0, Math.Min(post.Title.Length, 47)) + "...") : post.Title)</a></h6>
+                                                <div class="entry-meta meta-1 float-left font-x-small text-uppercase">
+                                                    <span class="post-on">@(post.CreatedDate.ToString("dd/MM").Replace("/", " tháng "))</span>
+                                                    <span class="post-by has-dot">@post.Views lượt xem</span>
+                                                </div>
+                                            </div>
+                                            <div class="post-thumb post-thumb-80 d-flex ml-15 border-radius-5 img-hover-scale overflow-hidden">
+                                                <a class="color-white" href="/Blog/Single/@post.Link">
+                                                    <img src="@post.ImageLink" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget widget-latest-posts mb-50 wow fadeInUp animated">
+                        <div class="widget-header-1 position-relative mb-30">
+                            <h5 class="mt-5 mb-30">Bình luận mới nhất</h5>
+                        </div>
+                        <div class="post-block-list post-module-2">
+                            <ul class="list-post">
+                                @foreach (var cmt in Model.LastComments)
+                                {
+                                    <li class="mb-30 wow fadeInUp animated">
+                                        <div class="d-flex bg-white has-border p-25 hover-up transition-normal border-radius-5">
+                                            <div class="post-thumb post-thumb-64 d-flex mr-15 border-radius-5 img-hover-scale overflow-hidden">
+                                                <a class="color-white" href="/Blog/Single/@cmt.PostLink">
+                                                    <img src="@cmt.Avatar" alt="">
+                                                </a>
+                                            </div>
+                                            <div class="post-content media-body">
+                                                <p class="mb-10">
+                                                    <a href="@(!string.IsNullOrEmpty(cmt.Username) ? "/Author/" + cmt.Username : "#")"><strong>@cmt.Name</strong></a>
+                                                    <span class="ml-15 font-small text-muted has-dot">@(cmt.CreatedDate.Day + " tháng " + cmt.CreatedDate.Month)</span>
+                                                </p>
+                                                <p class="text-muted font-small">@(cmt.Content.Length < 60 ? cmt.Content : cmt.Content.Substring(0, Math.Min(57, cmt.Content.Length)) + "...")</p>
+                                            </div>
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="sidebar-widget widget_instagram wow fadeInUp animated">
+                        <div class="widget-header-1 position-relative mb-30">
+                            <h5 class="mt-5 mb-30">Instagram</h5>
+                        </div>
+                        <div class="instagram-gellay">
+                            <ul class="insta-feed">
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var PAGENOW = 1;
+            var PAGEMAX = $("ul.pagination.justify-content-start li").length - 2;
+            setTimeout(function () {
+                LoadLatestPosts(PAGENOW);
+            }, 500);
+            LoadInstagramPost();
+
+            $(".page-link").click(function () {
+                if (!$(this).find("i").length) {
+                    PAGENOW = parseInt($(this).html())
+                }
+                else {
+                    var i = $(this).find("i");
+                    if (i.hasClass("arrow_right")) {
+                        if (PAGENOW != PAGEMAX) {
+                            PAGENOW++;
+                        }
+                    }
+                    else {
+                        if (PAGENOW != 1) {
+                            PAGENOW--;
+                        }
+                    }
+                }
+
+                LoadLatestPosts(PAGENOW);
+                $('html, body').animate({
+                    scrollTop: $(".post-module-3").offset().top - 80
+                }, 1000);
+            });
+        });
+
+        function LoadLatestPosts(PAGENOW) {
+            $.ajax({
+                url: "/Blog/GetLatestPosts",
+                method: "GET",
+                dataType: "json",
+                data: {
+                    pageNumber: PAGENOW
+                },
+                success: function (data) {
+                    var html = '';
+
+                    $(data).each(function (index, post) {
+                        var link = '@Configuration["AppSetting:HostURL"]/Blog/Single/' + post.link;
+                        var ev = "'width=500,height=500,top=300px,left=300px'";
+
+                        html += '<article class="hover-up-2 transition-normal wow fadeInUp animated">'
+                            + '<div class="row mb-40 list-style-2">'
+                            + '<div class="col-md-4">'
+                            + '<div class="post-thumb position-relative border-radius-5">'
+                            + '<div class="img-hover-slide border-radius-5 position-relative" style="background-image: url(' + post.imageLink + ')">'
+                            + '<a class="img-link" href="/Blog/Single/' + post.link + '"></a>'
+                            + '</div>'
+                            + '<ul class="social-share">'
+                            + '<li><a href="#"><i class="elegant-icon social_share"></i></a></li>'
+                            + '<li><a class="fb" href="//www.facebook.com/sharer/sharer.php?u=https://' + link + '" title="Chia sẻ lên Facebook" target="_blank" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_facebook"></i></a></li>'
+                            + '<li><a class="tw" href="//twitter.com/share?url=https://' + link + '" target="_blank" title="Tweet now" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_twitter"></i></a></li>'
+                            + '<li><a class="pt" href="//pinterest.com/pin/create/button/?url=' + link + '" target="_blank" title="Pin it" onclick="window.open(this.href,this.title,' + ev + '); return false;"><i class="elegant-icon social_pinterest"></i></a></li>'
+                            + '</ul>'
+                            + '</div>'
+                            + '</div>'
+                            + '<div class="col-md-8 align-self-center">'
+                            + '<div class="post-content">'
+                            + '<div class="entry-meta meta-0 font-small mb-10">'
+                            + '<a href="/Blog/Category/' + post.categoryId + '"><span class="post-cat ' + post.categoryColor + '">' + post.category + '</span></a>'
+                            + '</div>'
+                            + '<h5 class="post-title font-weight-900 mb-20">'
+                            + '<a href="/Blog/Single/' + post.link + '">' + post.title + '</a>'
+                            + '</h5>'
+                            + '<div class="entry-meta meta-1 float-left font-x-small text-uppercase">'
+                            + '<span class="post-on">' + ConvertToPostDate(post.createdDate) + '</span>'
+                            + '<span class="time-reading has-dot">' + post.readMinute + ' phút đọc</span>'
+                            + '<span class="post-by has-dot">' + post.views + ' lượt xem</span>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '</div>'
+                            + '</article>';
+                    });
+
+                    $("#latestPost").html(html);
+                    $(".page-item").removeClass("active");
+                    $(".page-link:contains(" + PAGENOW + ")").parent().addClass("active");
+                }
+            });
+        }
+    </script>
+}
