@@ -45,6 +45,24 @@ namespace Stories.Controllers
             return View();
         }
 
+        [Route("music")]
+        public IActionResult Music()
+        {
+            return View();
+        }
+
+        [Route("music/single")]
+        public IActionResult SingleMusic()
+        {
+            return View();
+        }
+
+        [Route("service")]
+        public IActionResult Service()
+        {
+            return View();
+        }
+
         #region Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
