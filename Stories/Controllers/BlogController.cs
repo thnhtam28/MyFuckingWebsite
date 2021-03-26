@@ -24,12 +24,11 @@ namespace Stories.Controllers
         public async Task<IActionResult> Index(string cat, string tag, string search_key)
         {
             var posts = await _blogService.GetHomePagePosts(cat, tag, search_key);
-
             return View(posts);
         }
 
-        [Route("blog/single")]
-        public IActionResult SingleBlog()
+        [Route("blog/{link}")]
+        public IActionResult SingleBlog(string link)
         {
             return View();
         }

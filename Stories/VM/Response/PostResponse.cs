@@ -16,6 +16,7 @@ namespace Stories.VM.Response
         public string ImageLink { get; set; }
         public int ReadMinute { get; set; }
         public int Views { get; set; }
+        public int CommentCount { get; set; }
         public string Link { get; set; }
         public string Type { get; set; }
         public List<string> Tags { get; set; }

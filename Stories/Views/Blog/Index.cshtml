@@ -4,19 +4,39 @@
 @model Stories.VM.HomePageViewModel
 
 @{
-    ViewData["Title"] = "Blog";
+    var t = Model.Type;
+    var s = Model.String;
+    ViewData["Title"] = t == 1 ? "Search Results for " + '"' + s + '"'
+                      : t == 2 ? s
+                      : t == 3 ? "#" + s
+                      : "Blog";
 }
 
 <!-- Content-->
 <div class="content">
     <!-- section-->
     <section class="parallax-section dark-bg sec-half parallax-sec-half-right" data-scrollax-parent="true">
-        <div class="bg par-elem" data-bg="images/bg/27.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
+        <div class="bg par-elem" data-bg="/images/bg/27.jpg" data-scrollax="properties: { translateY: '30%' }"></div>
         <div class="overlay"></div>
         <div class="pattern-bg"></div>
         <div class="container">
             <div class="section-title">
-                <h2>My  <span> Last news </span> and <br>Updates </h2>
+                @if (t == 1)
+                {
+                    <h2>Search Results for  <br>"<span>@s</span>"</h2>
+                }
+                else if (t == 2)
+                {
+                    <h2><span>@s</span></h2>
+                }
+                else if (t == 3)
+                {
+                    <h2>#<span>@s</span></h2>
+                }
+                else
+                {
+                    <h2>My  <span> Last news </span> and <br>Updates </h2>
+                }
                 <p> If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. </p>
                 <div class="horizonral-subtitle"><span>Journal</span></div>
             </div>
@@ -59,8 +79,8 @@
             </div>
             <!-- filter category end  -->
             <div class="blog-search">
-                <form action="#" class="searh-inner fl-wrap">
-                    <input name="search_key" id="search_key" type="text" class="search" placeholder="Search.." />
+                <form action="/blog" class="searh-inner fl-wrap">
+                    <input name="search_key" id="search_key" type="text" class="search" placeholder="Search..." />
                     <button class="search-submit color-bg" id="submit_btn"><i class="fa fa-search"></i> </button>
                 </form>
             </div>
@@ -80,7 +100,7 @@
                         {
                             <!-- post -->
                             <div class="post fl-wrap fw-post">
-                                <h2><a href="blog-single.html"><span>@post.Title</span></a></h2>
+                                <h2><a href="/blog/@post.Link"><span>@post.Title</span></a></h2>
                                 <div class="parallax-header"> <a href="#">@post.CreatedDate.ToString("dd MMM yyyy")</a><span>Category : </span><a href="/blog/cat/@post.CategoryId">@post.Category</a></div>
                                 <!-- blog media -->
                                 <div class="blog-media fl-wrap">
@@ -99,10 +119,10 @@
                                     <p>
                                         @(post.Content.Length > 460 ? post.Content.Substring(0, 460) + "..." : post.Content)
                                     </p>
-                                    <a href="blog-single.html" class="btn float-btn color-btn flat-btn">Read more </a>
+                                    <a href="/blog/@post.Link" class="btn float-btn color-btn flat-btn">Read more </a>
                                     <ul class="post-counter">
                                         <li><i class="fa fa-eye"></i><span>@post.Views</span></li>
-                                        <li><i class="fal fa-comments-alt"></i><span>10</span></li>
+                                        <li><i class="fal fa-comments-alt"></i><span>@post.CommentCount</span></li>
                                     </ul>
                                 </div>
                             </div>
@@ -117,7 +137,7 @@
                                 <h4 class="widget-title"><span>01.</span> About Author</h4>
                                 <div class="widget-container fl-wrap">
                                     <div class="about-widget fl-wrap">
-                                        <img src="images/avatar/7.jpg" alt="">
+                                        <img src="/images/avatar/7.jpg" alt="">
                                         <h5><a href="#">Martin Solonick</a></h5>
                                         <div class="clearfix"></div>
                                         <p>Etiam in nulla arcu, ut vehicula velit. Vivamus dapibus rutrum mi ut aliquam. In hac habitasse platea dictumst. Integer sagittis neque a tortor tempor in porta sem vulputate.</p>
@@ -181,10 +201,10 @@
                                 <h4 class="widget-title"><span>05.</span> Categories</h4>
                                 <div class="widget-container fl-wrap">
                                     <ul class="cat-item">
-                                        <li><a href="#">Standard</a> <span>(3)</span></li>
-                                        <li><a href="#">Video</a> <span>(6) </span></li>
-                                        <li><a href="#">Gallery</a> <span>(12) </span></li>
-                                        <li><a href="#">Quotes</a> <span>(4)</span></li>
+                                        @foreach (var cat in Model.CategoriesNav.OrderByDescending(x => x.PostCount))
+                                        {
+                                            <li><a href="/blog/cat/@cat.Id">@cat.Name</a> <span>(@cat.PostCount)</span></li>
+                                        }
                                     </ul>
                                 </div>
                             </div>

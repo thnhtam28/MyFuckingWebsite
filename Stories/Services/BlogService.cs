@@ -39,35 +39,71 @@ namespace Stories.Services
             // get Category
             var cats = await _unitOfWork.GetRepository<Category>().GetAll().ToListAsync();
 
-            var mostPopularPosts = p.Where(x => x.CreatedDate.Year == DateTime.Now.Year).OrderByDescending(x => x.Views).Take(5).ToList();
-
             // get Hot tags
+            var mostPopularPosts = p.Where(x => x.CreatedDate.Year == DateTime.Now.Year).OrderByDescending(x => x.Views).Take(5).ToList();
             var ht = new List<string>();
             foreach (var post in mostPopularPosts)
             {
                 var tags = post.Tag.Split(" "); ;
-                foreach (var t in tags)
+                foreach (var tg in tags)
                 {
-                    ht.Add(t.ToString());
+                    ht.Add(tg.ToString());
                 }
             }
             ht = ht.OrderBy(r => Guid.NewGuid()).Take(6).ToList();
 
+            // get Post for first page
+            var t = 0;
+            var s = "";
             var posts = new List<Post>();
 
-            if (string.IsNullOrEmpty(cat) && string.IsNullOrEmpty(search) && string.IsNullOrEmpty(search))
+            if (!string.IsNullOrEmpty(search))
+            {
+                posts = p.Where(x => x.Title.ToLower().Contains(search.ToLower()) || x.Content.ToLower().Contains(search.ToLower())).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                t = 1;
+                s = search;
+            }
+            else if (!string.IsNullOrEmpty(cat))
+            {
+                posts = p.Where(x => x.CategoryId == cat).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                t = 2;
+                s = cats.Where(x => x.Id == cat).FirstOrDefault().Name;
+            }
+            else if (!string.IsNullOrEmpty(tag))
+            {
+                posts = p.Where(x => x.Tag.ToLower().Contains(tag.ToLower())).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                t = 3;
+                s = tag;
+            }
+            else
             {
                 posts = p.OrderByDescending(x => x.CreatedDate).Take(4).ToList();
             }
 
+            //get Last Posts
             var lp = p.OrderByDescending(x => x.CreatedDate).ToList().Take(4).ToList();
+
+            //get Cat for Nav
+            var navcat = new List<CategoryResponse>();
+            foreach (var c in cats)
+            {
+                navcat.Add(new CategoryResponse() { 
+                    Id = c.Id,
+                    Name = c.Name,
+                    PostCount = p.Where(x => x.CategoryId == c.Id).Count()
+                });
+            }
 
             return new HomePageViewModel
             {
                 Categories = cats,
                 Tags = ht,
                 Posts = await ConvertToPostResponse(posts),
-                LastPosts = lp
+                LastPosts = lp,
+                CategoriesNav = navcat,
+                Type = t,
+                String = s,
+                TotalPost = posts.Count()
             };
         }
 
@@ -76,12 +112,14 @@ namespace Stories.Services
         {
             var postR = new List<PostResponse>();
             var cats = await _unitOfWork.GetRepository<Category>().GetAll().ToListAsync();
+            var com = await _unitOfWork.GetRepository<Comment>().GetAll().ToListAsync();
             foreach (var post in posts)
             {
                 var pr = _mapper.Map<PostResponse>(post);
                 pr.Category = cats.Find(x => x.Id == post.CategoryId).Name;
                 pr.CategoryColor = cats.Find(x => x.Id == post.CategoryId).Color;
                 pr.Tags = post.Tag.Split(" ").ToList();
+                pr.CommentCount = com.Where(x => x.PostId == post.Id).Count();
                 postR.Add(pr);
             }
             return postR;
