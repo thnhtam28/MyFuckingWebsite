@@ -63,6 +63,13 @@ namespace Stories.Controllers
             return View();
         }
 
+        [Route("coming")]
+        public IActionResult ComingSoon()
+        {
+            ViewBag.d = new DateTime(2021, 9, 12).ToString("MM/dd/yyyy");
+            return View();
+        }
+
         #region Error
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
