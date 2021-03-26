@@ -16,6 +16,6 @@ namespace Stories.VM
         public List<CategoryResponse> CategoriesNav { get; set; }
         public int Type { get; set; }
         public string String { get; set; }
-        public int TotalPost { get; set; }
+        public int MaxPage { get; set; }
     }
 }

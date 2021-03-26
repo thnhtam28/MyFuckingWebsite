@@ -1,15 +1,24 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
+@using Microsoft.AspNetCore.Http.Extensions
 
 @model Stories.VM.HomePageViewModel
 
 @{
     var t = Model.Type;
     var s = Model.String;
+    var m = Model.MaxPage;
+    var c = ViewBag.page;
     ViewData["Title"] = t == 1 ? "Search Results for " + '"' + s + '"'
                       : t == 2 ? s
                       : t == 3 ? "#" + s
                       : "Blog";
+    string path = Context.Request.GetEncodedPathAndQuery();
+
+    var url = "/blog" + (t == 1 ? "?search_key=" + s + "&page="
+                       : t == 2 ? "/cat/" + Model.Posts[0].CategoryId + "?page="
+                       : t == 3 ? "/tag/" + s + "?page="
+                       : "?page=");
 }
 
 <!-- Content-->
@@ -80,7 +89,7 @@
             <!-- filter category end  -->
             <div class="blog-search">
                 <form action="/blog" class="searh-inner fl-wrap">
-                    <input name="search_key" id="search_key" type="text" class="search" placeholder="Search..." />
+                    <input name="search_key" id="search_key" type="text" class="search" placeholder="Search..." value="@(t == 1 ? s : "")" />
                     <button class="search-submit color-bg" id="submit_btn"><i class="fa fa-search"></i> </button>
                 </form>
             </div>
@@ -95,7 +104,7 @@
             <!-- blog-container  -->
             <div class="fl-wrap post-container">
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-8" id="post">
                         @foreach (var post in Model.Posts)
                         {
                             <!-- post -->
@@ -111,7 +120,7 @@
                                     <span>Tags : </span>
                                     @foreach (var tag in post.Tags)
                                     {
-                                        <a href="/blog/tag/@tag">@tag</a> 
+                                        <a href="/blog/tag/@tag">@tag</a>
                                     }
                                 </div>
                                 <div class="blog-text fl-wrap">
@@ -217,11 +226,21 @@
                 <!-- content-nav -->
                 <div class="content-nav">
                     <ul>
-                        <li><a href="blog.html" class="ln"><i class="fal fa-arrow-left"></i><span class="tooltip">Prev - page 1</span></a></li>
                         <li>
-                            <span class="cur-page"><span>Page 2</span></span>
+                            @if (c != 1)
+                            {
+                                <a class="ln" href="@(url + (c - 1))"><i class="fal fa-arrow-left"></i><span class="tooltip">Prev - page @(c - 1)</span></a>
+                            }
                         </li>
-                        <li><a href="blog.html" class="rn"><i class="fal fa-arrow-right"></i><span class="tooltip">Next - page 2 </span></a></li>
+                        <li>
+                            <span class="cur-page"><span>Page @c</span></span>
+                        </li>
+                        <li>
+                            @if (c < m)
+                            {
+                                <a class="rn" href="@(url + (c + 1))"><i class="fal fa-arrow-right"></i><span class="tooltip">Next - page @(c + 1) </span></a>
+                            }
+                        </li>
                     </ul>
                 </div>
                 <!-- content-nav end-->
@@ -242,7 +261,7 @@
                 <div class="col-md-8">
                     <h3>Ready To order Your Project ?</h3>
                 </div>
-                <div class="col-md-4"><a href="contscts.html" class="btn flat-btn color-btn">Get In Touch</a> </div>
+                <div class="col-md-4"><a href="/contact" class="btn flat-btn color-btn">Get In Touch</a> </div>
             </div>
         </div>
     </section>
@@ -251,5 +270,10 @@
 <!-- Content end -->
 
 @section Scripts {
-    <script>$("#wrapper").addClass("single-page-wrap");</script>
+    <style>
+        .ln, .rn {
+            cursor: pointer;
+        }
+    </style>
+    <script>$("#wrapper").addClass("single-page-wrap"); console.log("@path");</script>
 }

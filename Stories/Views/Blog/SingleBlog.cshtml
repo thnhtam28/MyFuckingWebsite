@@ -1,6 +1,7 @@
-﻿
+﻿@model Stories.VM.BlogSingleViewModel
+
 @{
-    ViewData["Title"] = "SingleBlog";
+    ViewData["Title"] = Model.Title;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -63,8 +64,8 @@
                     <div class="col-md-8">
                         <!-- post -->
                         <div class="post fl-wrap fw-post">
-                            <h2><a href="blog-single.html"><span>Blog post title</span></a></h2>
-                            <div class="parallax-header"> <a href="#">27 may 2018</a><span>Category : </span><a href="#">Branding</a> <a href="#">Video</a> </div>
+                            <h2><a href="blog-single.html"><span>@Model.Title</span></a></h2>
+                            <div class="parallax-header"> <a href="#">@Model.CreatedDate.ToString("dd MMM yyyy")</a><span>Category : </span><a href="#">Branding</a> <a href="#">Video</a> </div>
                             <!-- blog media -->
                             <div class="blog-media fl-wrap nomar-bottom">
                                 <div class="single-slider-wrap slider-carousel-wrap ">
@@ -73,8 +74,8 @@
                                         <div class="slick-slide-item"><img src="/images/folio/9.jpg" alt=""></div>
                                         <div class="slick-slide-item"><img src="/images/folio/8.jpg" alt=""></div>
                                     </div>
-                                    <div class="sp-cont   sp-cont-prev"><i class="fal fa-long-arrow-left"></i></div>
-                                    <div class="sp-cont   sp-cont-next"><i class="fal fa-long-arrow-right"></i></div>
+                                    <div class="sp-cont sp-cont-prev"><i class="fal fa-long-arrow-left"></i></div>
+                                    <div class="sp-cont sp-cont-next"><i class="fal fa-long-arrow-right"></i></div>
                                 </div>
                             </div>
                             <!-- blog media end -->
@@ -98,7 +99,7 @@
                                     Proin eu ultrices libero. Curabitur vulputate vestibulum elementum. Suspendisse id neque a nibh mollis blandit. Quisque varius eros ac purus dignissim.
                                 </p>
                                 <ul class="post-counter single-post-counter">
-                                    <li><i class="fa fa-eye"></i><span>687</span></li>
+                                    <li><i class="fa fa-eye"></i><span>@Model.Views</span></li>
                                     <li><i class="fal fa-comments-alt"></i><span>10</span></li>
                                 </ul>
                             </div>

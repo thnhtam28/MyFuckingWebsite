@@ -17,7 +17,8 @@ namespace Stories.Services
 {
     public interface IBlogService
     {
-        Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search);
+        Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, int page);
+        Task<BlogSingleViewModel> GetSinglePost(string link);
     }
 
     public class BlogService : IBlogService
@@ -32,8 +33,10 @@ namespace Stories.Services
             _mapper = mapper;
         }
 
-        public async Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search)
+        public async Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, int page)
         {
+            var take = 4;
+            var skip = take * (page - 1);
             var p = await _unitOfWork.GetRepository<Post>().GetAll().ToListAsync();
 
             // get Category
@@ -59,25 +62,25 @@ namespace Stories.Services
 
             if (!string.IsNullOrEmpty(search))
             {
-                posts = p.Where(x => x.Title.ToLower().Contains(search.ToLower()) || x.Content.ToLower().Contains(search.ToLower())).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                posts = p.Where(x => x.Title.ToLower().Contains(search.ToLower()) || x.Content.ToLower().Contains(search.ToLower())).OrderByDescending(x => x.CreatedDate).ToList();
                 t = 1;
                 s = search;
             }
             else if (!string.IsNullOrEmpty(cat))
             {
-                posts = p.Where(x => x.CategoryId == cat).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                posts = p.Where(x => x.CategoryId == cat).OrderByDescending(x => x.CreatedDate).ToList();
                 t = 2;
                 s = cats.Where(x => x.Id == cat).FirstOrDefault().Name;
             }
             else if (!string.IsNullOrEmpty(tag))
             {
-                posts = p.Where(x => x.Tag.ToLower().Contains(tag.ToLower())).OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                posts = p.Where(x => x.Tag.ToLower().Contains(tag.ToLower())).OrderByDescending(x => x.CreatedDate).ToList();
                 t = 3;
                 s = tag;
             }
             else
             {
-                posts = p.OrderByDescending(x => x.CreatedDate).Take(4).ToList();
+                posts = p.OrderByDescending(x => x.CreatedDate).ToList();
             }
 
             //get Last Posts
@@ -98,13 +101,21 @@ namespace Stories.Services
             {
                 Categories = cats,
                 Tags = ht,
-                Posts = await ConvertToPostResponse(posts),
+                Posts = await ConvertToPostResponse(posts.Skip(skip).Take(take).ToList()),
                 LastPosts = lp,
                 CategoriesNav = navcat,
                 Type = t,
                 String = s,
-                TotalPost = posts.Count()
+                MaxPage = (posts.Count() / 4) + (posts.Count() % 4 >= 1 ? 1 : 0)
             };
+        }
+
+        public async Task<BlogSingleViewModel> GetSinglePost(string link)
+        {
+            var p = await _unitOfWork.GetRepository<Post>().GetAll().Where(x => x.Link == link).FirstOrDefaultAsync();
+            var vm = _mapper.Map<BlogSingleViewModel>(p);
+
+            return vm;
         }
 
         #region Helper

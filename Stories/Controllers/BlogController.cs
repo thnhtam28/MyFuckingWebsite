@@ -21,16 +21,18 @@ namespace Stories.Controllers
         [Route("blog")]
         [Route("blog/cat/{cat}")]
         [Route("blog/tag/{tag}")]
-        public async Task<IActionResult> Index(string cat, string tag, string search_key)
+        public async Task<IActionResult> Index(string cat, string tag, string search_key, int page = 1)
         {
-            var posts = await _blogService.GetHomePagePosts(cat, tag, search_key);
+            var posts = await _blogService.GetHomePagePosts(cat, tag, search_key, page);
+            ViewBag.page = page;
             return View(posts);
         }
 
         [Route("blog/{link}")]
-        public IActionResult SingleBlog(string link)
+        public async Task<IActionResult> SingleBlog(string link)
         {
-            return View();
+            var vm = await _blogService.GetSinglePost(link);
+            return View(vm);
         }
     }
 }
