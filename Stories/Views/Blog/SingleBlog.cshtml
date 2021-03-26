@@ -23,11 +23,10 @@
             <div class="tag-filter blog-btn-filter">
                 <div class="blog-btn">Tags <i class="fa fa-tags" aria-hidden="true"></i></div>
                 <ul>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">People</a></li>
-                    <li><a href="#">Nature</a></li>
-                    <li><a href="#">Comercial</a></li>
-                    <li><a href="#">Travel</a></li>
+                    @foreach (var tag in Model.Tags.Take(5))
+                    {
+                        <li><a href="/blog/tag/@tag">@tag</a></li>
+                    }
                 </ul>
             </div>
             <!-- filter tag end  -->
@@ -35,11 +34,10 @@
             <div class="category-filter blog-btn-filter">
                 <div class="blog-btn">Categories <i class="fa fa-list-ul" aria-hidden="true"></i></div>
                 <ul>
-                    <li><a href="#">Gallery</a></li>
-                    <li><a href="#">People</a></li>
-                    <li><a href="#">Nature</a></li>
-                    <li><a href="#">Comercial</a></li>
-                    <li><a href="#">Travel</a></li>
+                    @foreach (var cat in Model.Categories)
+                    {
+                        <li><a href="/blog/cat/@cat.Id">@cat.Name</a></li>
+                    }
                 </ul>
             </div>
             <!-- filter category end  -->
@@ -100,7 +98,7 @@
                                 </p>
                                 <ul class="post-counter single-post-counter">
                                     <li><i class="fa fa-eye"></i><span>@Model.Views</span></li>
-                                    <li><i class="fal fa-comments-alt"></i><span>10</span></li>
+                                    <li><i class="fal fa-comments-alt"></i><span>@Model.Comments.Count()</span></li>
                                 </ul>
                             </div>
                         </div>
@@ -108,11 +106,11 @@
                         <!-- post-author-->
                         <div class="post-author">
                             <div class="author-img">
-                                <img alt='' src="/images/team/8.jpg">
+                                <img alt='' src="@Model.AuthorAvatar">
                             </div>
                             <div class="author-content">
-                                <h5><a href="#">Martin Solonick</a></h5>
-                                <p>At one extremity the rope was unstranded, and the separate spread yarns were all braided and woven round the socket of the harpoon; the pole was then driven hard up into the socket; from the lower end the rope was traced half-way along the pole�s length, and firmly secured so, with intertwistings of twine.</p>
+                                <h5><a href="#">@Model.AuthorName</a></h5>
+                                <p>@Model.AuthorDescription</p>
                                 <div class="team-single-social fl-wrap">
                                     <span>Follow : </span>
                                     <ul>
@@ -127,33 +125,23 @@
                         <!--post-author end-->
                         <div id="comments" class="single-post-comm">
                             <!--title-->
-                            <h6 id="comments-title">Comments <span>(2)</span></h6>
+                            <h6 id="comments-title">Comments <span>(@Model.Comments.Count())</span></h6>
                             <ul class="commentlist clearafix">
-                                <li class="comment">
-                                    <div class="comment-body">
-                                        <div class="comment-author">
-                                            <img alt='' src='/images/team/8.jpg' width="50" height="50">
+                                @foreach (var cmt in Model.Comments)
+                                {
+                                    <li class="comment">
+                                        <div class="comment-body">
+                                            <div class="comment-author">
+                                                <img alt='' src='@cmt.Avatar' width="50" height="50">
+                                            </div>
+                                            <cite class="fn"><a href="#">@cmt.Name</a></cite>
+                                            <div class="comment-meta">
+                                                <h6><a href="#">@cmt.CreatedDate.ToString("MMMM dd, yyyy") at @cmt.CreatedDate.ToString("hh:mm tt")</a> / <a class='comment-reply-link' href="#">Reply</a></h6>
+                                            </div>
+                                            <p>@cmt.Content</p>
                                         </div>
-                                        <cite class="fn"><a href="#">Kevin</a></cite>
-                                        <div class="comment-meta">
-                                            <h6><a href="#">January 02, 2014 at 07:39 am</a> / <a class='comment-reply-link' href="#">Reply</a></h6>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo.</p>
-                                    </div>
-                                </li>
-                                <li class="comment">
-                                    <!--comment body-->
-                                    <div class="comment-body">
-                                        <div class="comment-author">
-                                            <img alt='' src='/images/team/9.jpg' width="50" height="50">
-                                        </div>
-                                        <cite class="fn"><a href="#">Andy</a></cite>
-                                        <div class="comment-meta">
-                                            <h6><a href="#">January 22, 2014 at 03:19 am</a> / <a class='comment-reply-link' href="#">Reply</a></h6>
-                                        </div>
-                                        <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Phasellus hendrerit. Pellentesque aliquet nibh nec urna. In nisi neque, aliquet vel, dapibus id, mattis vel, nisi. Sed pretium, ligula sollicitudin laoreet viverra, tortor libero sodales leo, eget blandit nunc tortor eu nibh. Nullam mollis. Ut justo.</p>
-                                    </div>
-                                </li>
+                                    </li>
+                                }
                             </ul>
                             <div class="clearfix"></div>
                             <div id="respond" class="clearafix">
@@ -211,34 +199,16 @@
                                 <div class="widget-container fl-wrap">
                                     <div class="widget-posts fl-wrap">
                                         <ul>
-                                            <li class="clearfix">
-                                                <a href="#" class="widget-posts-img"><img src="/images/folio/1.jpg" class="respimg" alt=""></a>
-                                                <div class="widget-posts-descr">
-                                                    <a href="#" title="">Vivamus dapibus rutrum</a>
-                                                    <span class="widget-posts-date"> 21 Mar 09.05 </span>
-                                                </div>
-                                            </li>
-                                            <li class="clearfix">
-                                                <a href="#" class="widget-posts-img"><img src="/images/folio/2.jpg" class="respimg" alt=""></a>
-                                                <div class="widget-posts-descr">
-                                                    <a href="#" title=""> In hac habitasse platea</a>
-                                                    <span class="widget-posts-date"> 7 Mar 18.21 </span>
-                                                </div>
-                                            </li>
-                                            <li class="clearfix">
-                                                <a href="#" class="widget-posts-img"><img src="/images/folio/4.jpg" class="respimg" alt=""></a>
-                                                <div class="widget-posts-descr">
-                                                    <a href="#" title="">Tortor tempor in porta</a>
-                                                    <span class="widget-posts-date"> 7 Mar 16.42 </span>
-                                                </div>
-                                            </li>
-                                            <li class="clearfix">
-                                                <a href="#" class="widget-posts-img"><img src="/images/folio/5.jpg" class="respimg" alt=""></a>
-                                                <div class="widget-posts-descr">
-                                                    <a href="#" title="">Praesent aliquet tortor</a>
-                                                    <span class="widget-posts-date"> 2 Mar 14.42 </span>
-                                                </div>
-                                            </li>
+                                            @foreach (var lp in Model.LastPosts)
+                                            {
+                                                <li class="clearfix">
+                                                    <a href="#" class="widget-posts-img"><img src="@lp.ImageLink" class="respimg respimg-blog-49" alt=""></a>
+                                                    <div class="widget-posts-descr">
+                                                        <a href="#" title="">@lp.Title</a>
+                                                        <span class="widget-posts-date"> @lp.CreatedDate.ToString("dd MMM yyyy") </span>
+                                                    </div>
+                                                </li>
+                                            }
                                         </ul>
                                     </div>
                                 </div>
@@ -249,12 +219,10 @@
                                 <h4 class="widget-title"><span>03.</span> Tags</h4>
                                 <div class="widget-container fl-wrap">
                                     <ul class="tagcloud">
-                                        <li><a href='#' class="transition link">Portfolio</a></li>
-                                        <li><a href='#' class="transition link">Tag</a></li>
-                                        <li><a href='#' class="transition link">Demo</a></li>
-                                        <li><a href='#' class="transition link">Blog</a></li>
-                                        <li><a href='#' class="transition link">Photography</a></li>
-                                        <li><a href='#' class="transition link">Web desighn</a></li>
+                                        @foreach (var tag in Model.Tags)
+                                        {
+                                            <li><a href='/blog/tag/@tag' class="transition link">@tag</a></li>
+                                        }
                                     </ul>
                                 </div>
                             </div>
@@ -273,10 +241,10 @@
                                 <h4 class="widget-title"><span>05.</span> Categories</h4>
                                 <div class="widget-container fl-wrap">
                                     <ul class="cat-item">
-                                        <li><a href="#">Standard</a> <span>(3)</span></li>
-                                        <li><a href="#">Video</a> <span>(6) </span></li>
-                                        <li><a href="#">Gallery</a> <span>(12) </span></li>
-                                        <li><a href="#">Quotes</a> <span>(4)</span></li>
+                                        @foreach (var cat in Model.CategoriesNav.OrderByDescending(x => x.PostCount))
+                                        {
+                                            <li><a href="/blog/cat/@cat.Id">@cat.Name</a> <span>(@cat.PostCount)</span></li>
+                                        }
                                     </ul>
                                 </div>
                             </div>
@@ -323,5 +291,10 @@
 <!-- Content end -->
 
 @section Scripts {
+    <style>
+        .comment-author img {
+            object-fit: cover;
+        }
+    </style>
     <script>$("#wrapper").addClass("single-page-wrap");</script>
 }

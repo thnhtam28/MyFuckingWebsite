@@ -47,5 +47,9 @@ namespace Stories.VM
         public bool Status { get; set; }
 
         public List<CommentResponse> Comments { get; set; }
+        public List<Post> LastPosts { get; set; }
+        public List<string> Tags { get; set; }
+        public List<Category> Categories { get; set; }
+        public List<CategoryResponse> CategoriesNav { get; set; }
     }
 }

@@ -112,8 +112,79 @@ namespace Stories.Services
 
         public async Task<BlogSingleViewModel> GetSinglePost(string link)
         {
-            var p = await _unitOfWork.GetRepository<Post>().GetAll().Where(x => x.Link == link).FirstOrDefaultAsync();
-            var vm = _mapper.Map<BlogSingleViewModel>(p);
+            var p = await _unitOfWork.GetRepository<Post>().GetAll().ToListAsync();
+            var users = await _unitOfWork.GetRepository<User>().GetAll().ToListAsync();
+
+            // get Single Post
+            var sp = p.First(x => x.Link == link);
+            var vm = _mapper.Map<BlogSingleViewModel>(sp);
+
+            // get author
+            var user = users.Find(x => x.Id == sp.AuthorId);
+
+            // get Comments
+            var comments = await _unitOfWork.GetRepository<Comment>().GetAll().Where(x => x.PostId == sp.Id).OrderByDescending(x => x.CreatedDate).ToListAsync();
+            var commentR = new List<CommentResponse>();
+            foreach (var comment in comments)
+            {
+                var cmt = _mapper.Map<CommentResponse>(comment);
+                if (comment.UserId != null && comment.UserId != Guid.Empty)
+                {
+                    var us = users.Find(x => x.Id == comment.UserId);
+                    cmt.Username = us.Username;
+                    cmt.Avatar = us.Avatar;
+                    cmt.Name = us.Name;
+                }
+                else
+                {
+                    cmt.Avatar = "/images/team/8.jpg";
+                }
+                commentR.Add(cmt);
+            }
+
+            // get Category
+            var cats = await _unitOfWork.GetRepository<Category>().GetAll().ToListAsync();
+
+            // get Hot tags
+            var mostPopularPosts = p.Where(x => x.CreatedDate.Year == DateTime.Now.Year).OrderByDescending(x => x.Views).Take(5).ToList();
+            var ht = new List<string>();
+            foreach (var post in mostPopularPosts)
+            {
+                var tags = post.Tag.Split(" "); ;
+                foreach (var tg in tags)
+                {
+                    ht.Add(tg.ToString());
+                }
+            }
+            ht = ht.OrderBy(r => Guid.NewGuid()).Take(6).ToList();
+
+            // get Last Posts
+            var lp = p.OrderByDescending(x => x.CreatedDate).ToList().Take(4).ToList();
+
+            // get Cat for Nav
+            var navcat = new List<CategoryResponse>();
+            foreach (var c in cats)
+            {
+                navcat.Add(new CategoryResponse()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                    PostCount = p.Where(x => x.CategoryId == c.Id).Count()
+                });
+            }
+
+            vm.AuthorName = user.Name;
+            vm.AuthorUsername = user.Username;
+            vm.AuthorAvatar = user.Avatar;
+            vm.AuthorDescription = user.Description;
+            vm.Comments = commentR;
+            vm.Tags = ht;
+            vm.LastPosts = lp;
+            vm.Categories = cats;
+            vm.CategoriesNav = navcat;
+
+            sp.Views += 1;
+            await _unitOfWork.CommitAsync();
 
             return vm;
         }
