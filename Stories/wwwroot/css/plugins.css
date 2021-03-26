@@ -1,4 +1,4 @@
-@charset "utf-8";
+﻿@charset "utf-8";
 /* CSS Document */
 /*!
  * Bootstrap v3.3.2 (http://getbootstrap.com)
@@ -1187,3 +1187,320 @@ body:not(.lg-from-hash) .lg-outer.lg-start-zoom .lg-item.lg-complete .lg-object 
 	font-size:13px;
 	border-radius:2px;
 }
+.audiojs audio {
+    position: absolute;
+    left: -1px;
+}
+
+.audiojs {
+    float: left;
+    width: 100%;
+    height: 60px;
+    background: #404040;
+    overflow: hidden;
+    font-size: 12px;
+    padding: 0 0 0 90px;
+    position: relative;
+}
+
+    .audiojs:before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: 100%;
+        background: #2D2D32;
+    }
+
+    .audiojs .play-pause {
+        width: 70px;
+        height: 60px;
+        overflow: hidden;
+        border-right: 1px solid rgba(255,255,255,0.21);
+        position: absolute;
+        left: 0;
+        top: 0;
+        background: #2D2D32;
+    }
+
+    .audiojs p {
+        display: none;
+        width: 50px;
+        height: 60px;
+        margin: 0px;
+        cursor: pointer;
+    }
+
+    .audiojs .play, .audiojs .pause {
+        display: block;
+        position: relative;
+    }
+
+        .audiojs .play:before, .audiojs .pause:before {
+            font-family: Font Awesome\ 5 Pro;
+            content: '\f04b';
+            position: absolute;
+            z-index: 20;
+            top: 18px;
+            left: 28px;
+            font-size: 13px;
+        }
+
+        .audiojs .play:hover:before, .audiojs .pause:hover:before {
+            color: rgba(255,255,255,0.71);
+        }
+
+        .audiojs .pause:before {
+            content: '\f04c';
+        }
+
+    .audiojs .scrubber {
+        position: relative;
+        float: left;
+        width: 70%;
+        background: #5a5a5a;
+        height: 20px;
+        overflow: hidden;
+        top: 20px;
+        cursor: pointer;
+    }
+
+    .audiojs .progress {
+        position: absolute;
+        top: 0px;
+        left: 0px;
+        height: 20px;
+        width: 0px;
+        background: #ccc;
+        z-index: 1;
+    }
+
+    .audiojs .time {
+        float: left;
+        height: 60px;
+        line-height: 60px;
+        width: 25%;
+        position: relative;
+        color: #fff;
+    }
+
+        .audiojs .time:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            width: 1px;
+            height: 100%;
+            background: rgba(255,255,255,0.21);
+        }
+
+        .audiojs .time em {
+            padding: 0px 2px 0px 0px;
+            color: #f9f9f9;
+            font-style: normal;
+        }
+
+        .audiojs .time strong {
+            padding: 0px 0px 0px 2px;
+            font-weight: normal;
+        }
+
+.volume-control {
+    position: absolute;
+    top: 22px;
+    right: 20px;
+    z-index: 20;
+}
+
+    .volume-control span {
+        float: left;
+        width: 4px;
+        height: 16px;
+        background: #ccc;
+        cursor: pointer;
+        transition: 0.3s;
+        margin-left: 4px;
+    }
+
+        .volume-control span.selected {
+            background: #ccc;
+        }
+
+.audiojs .error-message {
+    float: left;
+    display: none;
+    margin: 0px 10px;
+    height: 36px;
+    width: 100%;
+    overflow: hidden;
+    line-height: 36px;
+    white-space: nowrap;
+    color: #fff;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    -icab-text-overflow: ellipsis;
+    -khtml-text-overflow: ellipsis;
+    -moz-text-overflow: ellipsis;
+    -webkit-text-overflow: ellipsis;
+}
+
+    .audiojs .error-message a {
+        color: #eee;
+        text-decoration: none;
+        padding-bottom: 1px;
+        border-bottom: 1px solid #999;
+        white-space: wrap;
+    }
+
+.playing .play, .playing .loading, .playing .error {
+    display: none;
+}
+
+.playing .pause {
+    display: block;
+}
+
+.loading .play, .loading .pause, .loading .error {
+    display: none;
+}
+
+.loading .loading {
+    display: block;
+}
+
+.error .time, .error .play, .error .pause, .error .scrubber, .error .loading {
+    display: none;
+}
+
+.error .error {
+    display: block;
+}
+
+.error .play-pause p {
+    cursor: auto;
+}
+
+.error .error-message {
+    display: block;
+}
+
+.playlist-wrap {
+    margin-top: 40px;
+}
+
+    .playlist-wrap ol li {
+        float: left;
+        width: 100%;
+        text-align: left;
+        background: #404040;
+        position: relative;
+        overflow: hidden;
+        border-radius: 4px;
+        margin-bottom: 10px;
+        counter-increment: step-counter;
+        padding: 20px 0 20px 80px;
+    }
+
+        .playlist-wrap ol li:before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 70px;
+            height: 100%;
+            line-height: 55px;
+            border-right: 1px solid rgba(255,255,255,0.21);
+            text-align: center;
+            background: #444449;
+        }
+
+        .playlist-wrap ol li a.audio-link {
+            float: left;
+            position: relative;
+            z-index: 2;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: left;
+            color: #fff;
+            font-size: 10px;
+            padding-left: 20px;
+        }
+
+        .playlist-wrap ol li a.downbuy-link {
+            position: absolute;
+            top: 15px;
+            right: 30px;
+            font-size: 16px;
+            color: #888;
+            z-index: 2;
+        }
+
+        .playlist-wrap ol li.playing {
+            background: #2D2D32;
+        }
+
+            .playlist-wrap ol li.playing a.audio-link {
+                color: rgba(255,255,255,0.71);
+            }
+
+.album-list-title {
+    float: left;
+    margin-left: 10px;
+    padding-left: 10px;
+    color: rgba(255,255,255,0.71);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-align: left;
+    font-size: 10px;
+    position: relative;
+}
+
+    .album-list-title:before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: -5px;
+        width: 10px;
+        height: 1px;
+        margin-top: -0.5px;
+        background: rgba(255,255,255,0.71);
+    }
+
+.album-download-links {
+    margin-top: 20px;
+}
+
+.buy-album span {
+    float: left;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-weight: 800;
+    font-size: 11px;
+    position: relative;
+}
+
+    .buy-album span:before {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        border-bottom: 1px dotted #ccc;
+    }
+
+.buy-album a {
+    float: left;
+    margin-left: 12px;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    font-style: italic;
+    color: #999;
+    font-size: 12px;
+    position: relative;
+    top: 2px;
+}
+
+    .buy-album a:hover {
+        color: #666;
+    }
