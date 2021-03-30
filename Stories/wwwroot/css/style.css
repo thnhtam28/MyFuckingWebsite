@@ -5723,6 +5723,24 @@ section.parallax-section .section-title:before {
 .post p {
 	text-align: left;
 }
+.post span.post-content {
+	text-align: left;
+	display: block;
+	white-space: pre-line;
+	font-size: 11px;
+	line-height: 24px;
+	padding-bottom: 10px;
+	font-weight: 500;
+	color: #878C9F;
+	font-family: 'Poppins', sans-serif;
+}
+.post span.post-content figure {
+	text-align: center !important;
+}
+.post span.post-content figure img {
+	width: 100%;
+	height: auto;
+}
 .fw-post {
 	margin-bottom: 30px;
 	padding-bottom: 30px;

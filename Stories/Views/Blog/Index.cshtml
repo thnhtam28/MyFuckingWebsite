@@ -1,6 +1,7 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
 @using Microsoft.AspNetCore.Http.Extensions
+@using System.Text.RegularExpressions
 
 @model Stories.VM.HomePageViewModel
 
@@ -133,7 +134,10 @@
                                 <div class="blog-text fl-wrap">
                                     <div class="clearfix"></div>
                                     <p>
-                                        @(post.Content.Length > 460 ? post.Content.Substring(0, 460) + "..." : post.Content)
+                                        @{
+                                            var ctnt = Regex.Replace(post.Content, "<.*?>", String.Empty);
+                                        }
+                                        @(ctnt.Length > 460 ? ctnt.Substring(0, 460) + "..." : ctnt)
                                     </p>
                                     <a href="/blog/@post.Link" class="btn float-btn color-btn flat-btn">Read more </a>
                                     <ul class="post-counter">
@@ -197,9 +201,9 @@
                                             @foreach (var lp in Model.LastPosts)
                                             {
                                                 <li class="clearfix">
-                                                    <a href="#" class="widget-posts-img"><img src="@lp.ImageLink" class="respimg respimg-blog-49" alt=""></a>
+                                                    <a href="/blog/@lp.Link" class="widget-posts-img"><img src="@lp.ImageLink" class="respimg respimg-blog-49" alt=""></a>
                                                     <div class="widget-posts-descr">
-                                                        <a href="#" title="">@lp.Title</a>
+                                                        <a href="/blog/@lp.Link" title="">@lp.Title</a>
                                                         <span class="widget-posts-date"> @lp.CreatedDate.ToString("dd MMM yyyy") </span>
                                                     </div>
                                                 </li>
