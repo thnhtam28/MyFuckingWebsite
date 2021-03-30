@@ -21,9 +21,10 @@ namespace Stories.Controllers
         [Route("blog")]
         [Route("blog/cat/{cat}")]
         [Route("blog/tag/{tag}")]
-        public async Task<IActionResult> Index(string cat, string tag, string search_key, int page = 1)
+        [Route("blog/author/{username}")]
+        public async Task<IActionResult> Index(string cat, string tag, string search_key, string username, int page = 1)
         {
-            var posts = await _blogService.GetHomePagePosts(cat, tag, search_key, page);
+            var posts = await _blogService.GetHomePagePosts(cat, tag, search_key, username, page);
             ViewBag.page = page;
             return View(posts);
         }

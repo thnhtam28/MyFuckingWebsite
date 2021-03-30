@@ -9,15 +9,18 @@
     var s = Model.String;
     var m = Model.MaxPage;
     var c = ViewBag.page;
+    var stt = 1;
     ViewData["Title"] = t == 1 ? "Search Results for " + '"' + s + '"'
                       : t == 2 ? s
                       : t == 3 ? "#" + s
+                      : t == 4 ? "Post created by " + s
                       : "Blog";
     string path = Context.Request.GetEncodedPathAndQuery();
 
     var url = "/blog" + (t == 1 ? "?search_key=" + s + "&page="
                        : t == 2 ? "/cat/" + Model.Posts[0].CategoryId + "?page="
                        : t == 3 ? "/tag/" + s + "?page="
+                       : t == 4 ? "/author/" + s + "?page="
                        : "?page=");
 }
 
@@ -41,6 +44,10 @@
                 else if (t == 3)
                 {
                     <h2>#<span>@s</span></h2>
+                }
+                else if (t == 4)
+                {
+                    <h2>Post created by <br><span>@s</span></h2>
                 }
                 else
                 {
@@ -113,7 +120,7 @@
                                 <div class="parallax-header"> <a href="#">@post.CreatedDate.ToString("dd MMM yyyy")</a><span>Category : </span><a href="/blog/cat/@post.CategoryId">@post.Category</a></div>
                                 <!-- blog media -->
                                 <div class="blog-media fl-wrap">
-                                    <img src="@post.ImageLink" alt="">
+                                    <img src="@post.ImageLink" alt="" class="bm-respimg">
                                 </div>
                                 <!-- blog media end -->
                                 <div class="parallax-header fl-wrap">
@@ -141,30 +148,49 @@
                     <!-- blog-sidebar  -->
                     <div class="col-md-4">
                         <div class="blog-sidebar fl-wrap fixed-bar">
+                            @if (t == 4)
+                            {
+                                var user = Model.User;
+
+                                <!-- widget-wrap -->
+                                <div class="widget-wrap fl-wrap">
+                                    <h4 class="widget-title"><span>0@(stt++).</span> About Author</h4>
+                                    <div class="widget-container fl-wrap">
+                                        <div class="about-widget fl-wrap">
+                                            <img src="@user.Avatar" alt="">
+                                            <h5><a href="/blog/author/@user.Username">@user.Name</a></h5>
+                                            <div class="clearfix"></div>
+                                            <p>@user.Description</p>
+                                            <div class="about-widget-social fl-wrap">
+                                                <span>Find on : </span>
+                                                <ul>
+                                                    <li><a href="#" target="_blank">Facebook</a></li>
+                                                    <li><a href="#" target="_blank">Instagram</a></li>
+                                                    <li><a href="#" target="_blank">Twitter</a></li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- widget-wrap end -->
+                            }
+                            <!-- widget-wrap -->
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>01.</span> About Author</h4>
+                                <h4 class="widget-title"><span>0@(stt++).</span> Our Fanpage</h4>
                                 <div class="widget-container fl-wrap">
-                                    <div class="about-widget fl-wrap">
-                                        <img src="/images/avatar/7.jpg" alt="">
-                                        <h5><a href="#">Martin Solonick</a></h5>
-                                        <div class="clearfix"></div>
-                                        <p>Etiam in nulla arcu, ut vehicula velit. Vivamus dapibus rutrum mi ut aliquam. In hac habitasse platea dictumst. Integer sagittis neque a tortor tempor in porta sem vulputate.</p>
-                                        <div class="about-widget-social fl-wrap">
-                                            <span>Find on : </span>
-                                            <ul>
-                                                <li><a href="#" target="_blank">Facebook</a></li>
-                                                <li><a href="#" target="_blank">Instagram</a></li>
-                                                <li><a href="#" target="_blank">Twitter</a></li>
-                                            </ul>
-                                        </div>
+                                    <div class="fb-page" data-href="https://www.facebook.com/BLACKCrewNeverSurrender/" data-tabs="" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                        <blockquote cite="https://www.facebook.com/BLACKCrewNeverSurrender/" class="fb-xfbml-parse-ignore">
+                                            <a href="https://www.facebook.com/BLACKCrewNeverSurrender/">ＫＸＧＥ Presents BLΛƆK Crew</a>
+                                        </blockquote>
                                     </div>
                                 </div>
                             </div>
                             <!-- widget-wrap end  -->
+                            <!-- widget-wrap end -->
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>02.</span> Last Posts</h4>
+                                <h4 class="widget-title"><span>0@(stt++).</span> Last Posts</h4>
                                 <div class="widget-container fl-wrap">
                                     <div class="widget-posts fl-wrap">
                                         <ul>
@@ -185,7 +211,7 @@
                             <!-- widget-wrap end  -->
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>03.</span> Tags</h4>
+                                <h4 class="widget-title"><span>0@(stt++).</span> Tags</h4>
                                 <div class="widget-container fl-wrap">
                                     <ul class="tagcloud">
                                         @foreach (var tag in Model.Tags)
@@ -198,7 +224,7 @@
                             <!-- widget-wrap end  -->
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>04.</span>Our Instagram</h4>
+                                <h4 class="widget-title"><span>0@(stt++).</span>Our Instagram</h4>
                                 <div class="widget-container fl-wrap">
                                     <div class='jr-insta-thumb' id="insta-content" data-instatoken="3980752.1677ed0.62bb6a2ad3ef4dc0a6aad768ab8939ab">
                                     </div>
@@ -207,7 +233,7 @@
                             <!-- widget-wrap end  -->
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>05.</span> Categories</h4>
+                                <h4 class="widget-title"><span>0@(stt++).</span> Categories</h4>
                                 <div class="widget-container fl-wrap">
                                     <ul class="cat-item">
                                         @foreach (var cat in Model.CategoriesNav.OrderByDescending(x => x.PostCount))
@@ -270,10 +296,12 @@
 <!-- Content end -->
 
 @section Scripts {
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId=449245312768740&autoLogAppEvents=1" nonce="Fx8ldU9x"></script>
     <style>
         .ln, .rn {
             cursor: pointer;
         }
     </style>
-    <script>$("#wrapper").addClass("single-page-wrap"); console.log("@path");</script>
+    <script>$("#wrapper").addClass("single-page-wrap");</script>
 }

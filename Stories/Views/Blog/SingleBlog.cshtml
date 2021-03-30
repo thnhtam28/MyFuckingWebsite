@@ -62,22 +62,29 @@
                     <div class="col-md-8">
                         <!-- post -->
                         <div class="post fl-wrap fw-post">
-                            <h2><a href="blog-single.html"><span>@Model.Title</span></a></h2>
-                            <div class="parallax-header"> <a href="#">@Model.CreatedDate.ToString("dd MMM yyyy")</a><span>Category : </span><a href="#">Branding</a> <a href="#">Video</a> </div>
+                            <h2><a href="/blog/@Model.Link"><span>@Model.Title</span></a></h2>
+                            <div class="parallax-header"> <a href="#">@Model.CreatedDate.ToString("dd MMM yyyy")</a><span>Category : </span><a href="/blog/cat/@Model.CategoryId">@Model.CategoryName</a></div>
                             <!-- blog media -->
-                            <div class="blog-media fl-wrap nomar-bottom">
-                                <div class="single-slider-wrap slider-carousel-wrap ">
-                                    <div class="single-slider cur_carousel-slider-container fl-wrap">
-                                        <div class="slick-slide-item"><img src="/images/folio/2.jpg" alt=""></div>
-                                        <div class="slick-slide-item"><img src="/images/folio/9.jpg" alt=""></div>
-                                        <div class="slick-slide-item"><img src="/images/folio/8.jpg" alt=""></div>
-                                    </div>
-                                    <div class="sp-cont sp-cont-prev"><i class="fal fa-long-arrow-left"></i></div>
-                                    <div class="sp-cont sp-cont-next"><i class="fal fa-long-arrow-right"></i></div>
-                                </div>
+                            <div class="blog-media fl-wrap nomar-bottom" style="margin-bottom: 20px;">
+                                <img src="@Model.ImageLink" alt="">
+                                @*<div class="single-slider-wrap slider-carousel-wrap ">
+                                        <div class="single-slider cur_carousel-slider-container fl-wrap">
+                                            <div class="slick-slide-item"><img src="/images/folio/2.jpg" alt=""></div>
+                                            <div class="slick-slide-item"><img src="/images/folio/9.jpg" alt=""></div>
+                                            <div class="slick-slide-item"><img src="/images/folio/8.jpg" alt=""></div>
+                                        </div>
+                                        <div class="sp-cont sp-cont-prev"><i class="fal fa-long-arrow-left"></i></div>
+                                        <div class="sp-cont sp-cont-next"><i class="fal fa-long-arrow-right"></i></div>
+                                    </div>*@
                             </div>
                             <!-- blog media end -->
-                            <div class="parallax-header fl-wrap"><span>Tags : </span><a href="#">Branding</a> <a href="#">Video</a>  <a href="#">Design</a></div>
+                            <div class="parallax-header fl-wrap">
+                                <span>Tags : </span>
+                                @foreach (var t in Model.Tag.Split(" "))
+                                {
+                                    <a href="/blog/tag/@t">@t</a>
+                                }
+                            </div>
                             <div class="blog-text fl-wrap">
                                 <div class="clearfix"></div>
                                 <h3><a href="blog-single.html">Aliquip pertinax <strong>vix ad </strong></a></h3>
@@ -109,7 +116,7 @@
                                 <img alt='' src="@Model.AuthorAvatar">
                             </div>
                             <div class="author-content">
-                                <h5><a href="#">@Model.AuthorName</a></h5>
+                                <h5><a href="/blog/author/@Model.AuthorUsername">@Model.AuthorName</a></h5>
                                 <p>@Model.AuthorDescription</p>
                                 <div class="team-single-social fl-wrap">
                                     <span>Follow : </span>
@@ -174,21 +181,12 @@
                         <div class="blog-sidebar fl-wrap fixed-bar">
                             <!-- widget-wrap -->
                             <div class="widget-wrap fl-wrap">
-                                <h4 class="widget-title"><span>01.</span> About Author</h4>
+                                <h4 class="widget-title"><span>01.</span> Our Fanpage</h4>
                                 <div class="widget-container fl-wrap">
-                                    <div class="about-widget fl-wrap">
-                                        <img src="/images/avatar/7.jpg" alt="">
-                                        <h5><a href="#">Martin Solonick</a></h5>
-                                        <div class="clearfix"></div>
-                                        <p>Etiam in nulla arcu, ut vehicula velit. Vivamus dapibus rutrum mi ut aliquam. In hac habitasse platea dictumst. Integer sagittis neque a tortor tempor in porta sem vulputate.</p>
-                                        <div class="about-widget-social fl-wrap">
-                                            <span>Find on : </span>
-                                            <ul>
-                                                <li><a href="#" target="_blank">Facebook</a></li>
-                                                <li><a href="#" target="_blank">Instagram</a></li>
-                                                <li><a href="#" target="_blank">Twitter</a></li>
-                                            </ul>
-                                        </div>
+                                    <div class="fb-page" data-href="https://www.facebook.com/BLACKCrewNeverSurrender/" data-tabs="" data-width="" data-height="" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+                                        <blockquote cite="https://www.facebook.com/BLACKCrewNeverSurrender/" class="fb-xfbml-parse-ignore">
+                                            <a href="https://www.facebook.com/BLACKCrewNeverSurrender/">ＫＸＧＥ Presents BLΛƆK Crew</a>
+                                        </blockquote>
                                     </div>
                                 </div>
                             </div>
@@ -291,6 +289,8 @@
 <!-- Content end -->
 
 @section Scripts {
+    <div id="fb-root"></div>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/vi_VN/sdk.js#xfbml=1&version=v9.0&appId=449245312768740&autoLogAppEvents=1" nonce="Fx8ldU9x"></script>
     <style>
         .comment-author img {
             object-fit: cover;

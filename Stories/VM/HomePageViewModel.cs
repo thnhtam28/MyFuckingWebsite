@@ -14,6 +14,7 @@ namespace Stories.VM
         public List<PostResponse> Posts { get; set; }
         public List<Post> LastPosts { get; set; }
         public List<CategoryResponse> CategoriesNav { get; set; }
+        public User User { get; set; }
         public int Type { get; set; }
         public string String { get; set; }
         public int MaxPage { get; set; }

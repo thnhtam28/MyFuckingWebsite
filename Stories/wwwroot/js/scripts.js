@@ -827,24 +827,48 @@ function initparallax() {
     if (trueMobile) $(".bgvid , .background-vimeo , .background-youtube-wrapper ").remove();
 }
     //   instagram ------------------	
-    var actoket = $('#insta-content').data("instatoken");
-    var token = actoket,
-        num_photos = 6;
-    $.ajax({
-        url: 'https://api.instagram.com/v1/users/self/media/recent',
-        dataType: 'jsonp',
-        type: 'GET',
-        data: {
-            access_token: token,
-            count: num_photos
-        },
-        success: function (data) {
-            for (x in data.data) {
-                $('#insta-content').append('<a target="_blank" href="' + data.data[x].link + '"><img src="' + data.data[x].images.low_resolution.url + '"></a>');
-            }
-        },
-        error: function (data) {
-            console.log(data);
+    //var actoket = $('#insta-content').data("instatoken");
+    //var token = actoket,
+    //    num_photos = 6;
+    //$.ajax({
+    //    url: 'https://api.instagram.com/v1/users/self/media/recent',
+    //    dataType: 'jsonp',
+    //    type: 'GET',
+    //    data: {
+    //        access_token: token,
+    //        count: num_photos
+    //    },
+    //    success: function (data) {
+    //        for (x in data.data) {
+    //            $('#insta-content').append('<a target="_blank" href="' + data.data[x].link + '"><img src="' + data.data[x].images.low_resolution.url + '"></a>');
+    //        }
+    //    },
+    //    error: function (data) {
+    //        console.log(data);
+    //    }
+    //});
+    //   instagram without token ------------------	
+    var name = "theweeknd";
+
+    $.get("https://images" + ~~(Math.random() * 3333) + "-focus-opensocial.googleusercontent.com/gadgets/proxy?container=none&url=https://www.instagram.com/" + name + "/", function (html) {
+        if (html) {
+            var regex = /_sharedData = ({.*);<\/script>/m;
+            json = JSON.parse(regex.exec(html)[1]);
+            edges = json.entry_data.ProfilePage[0].graphql.user.edge_owner_to_timeline_media.edges;
+            var i = 0;
+
+            $.each(edges, function (n, edge) {
+                var node = edge.node;
+                $('#insta-content').append('<a href="' + node.display_url + '"><img src="' + node.thumbnail_src + '" alt=""></a>');
+                i++;
+                if (i == 9) return false;
+            });
+
+            $("#insta-content").lightGallery({
+                cssEasing: "cubic-bezier(0.25, 0, 0.25, 1)",
+                download: false,
+                counter: false
+            });
         }
     });
     //   audio player ------------------

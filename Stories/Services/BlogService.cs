@@ -17,7 +17,7 @@ namespace Stories.Services
 {
     public interface IBlogService
     {
-        Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, int page);
+        Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, string username, int page);
         Task<BlogSingleViewModel> GetSinglePost(string link);
     }
 
@@ -33,11 +33,11 @@ namespace Stories.Services
             _mapper = mapper;
         }
 
-        public async Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, int page)
+        public async Task<HomePageViewModel> GetHomePagePosts(string cat, string tag, string search, string username, int page)
         {
             var take = 4;
             var skip = take * (page - 1);
-            var p = await _unitOfWork.GetRepository<Post>().GetAll().ToListAsync();
+            var p = await _unitOfWork.GetRepository<Post>().GetAll().OrderByDescending(x => x.CreatedDate).ToListAsync();
 
             // get Category
             var cats = await _unitOfWork.GetRepository<Category>().GetAll().ToListAsync();
@@ -59,6 +59,7 @@ namespace Stories.Services
             var t = 0;
             var s = "";
             var posts = new List<Post>();
+            var user = new User();
 
             if (!string.IsNullOrEmpty(search))
             {
@@ -77,6 +78,13 @@ namespace Stories.Services
                 posts = p.Where(x => x.Tag.ToLower().Contains(tag.ToLower())).OrderByDescending(x => x.CreatedDate).ToList();
                 t = 3;
                 s = tag;
+            }
+            else if (!string.IsNullOrEmpty(username))
+            {
+                user = await _unitOfWork.GetRepository<User>().GetAll().FirstOrDefaultAsync(x => x.Username == username);
+                posts = p.Where(x => x.AuthorId == user.Id).ToList();
+                t = 4;
+                s = username;
             }
             else
             {
@@ -104,6 +112,7 @@ namespace Stories.Services
                 Posts = await ConvertToPostResponse(posts.Skip(skip).Take(take).ToList()),
                 LastPosts = lp,
                 CategoriesNav = navcat,
+                User = user,
                 Type = t,
                 String = s,
                 MaxPage = (posts.Count() / 4) + (posts.Count() % 4 >= 1 ? 1 : 0)
@@ -173,6 +182,7 @@ namespace Stories.Services
                 });
             }
 
+            vm.CategoryName = cats.Find(x => x.Id == vm.CategoryId).Name;
             vm.AuthorName = user.Name;
             vm.AuthorUsername = user.Username;
             vm.AuthorAvatar = user.Avatar;

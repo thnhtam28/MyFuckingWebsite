@@ -24,9 +24,12 @@ namespace Stories.VM
         public string AuthorAvatar { get; set; }
 
         public string AuthorDescription { get; set; }
+
         public int AuthorPostCount { get; set; }
 
         public string CategoryId { get; set; }
+
+        public string CategoryName { get; set; }
 
         public int ReadMinute { get; set; }
 
