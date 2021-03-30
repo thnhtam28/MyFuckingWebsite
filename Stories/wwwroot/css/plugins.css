@@ -206,11 +206,11 @@ source {
 }
 
 .lg-actions .lg-next, .lg-actions .lg-prev {
-  background-color: #292929;
+  background-color: transparent;
   color:  rgba(255,255,255,0.71);
   cursor: pointer;
   display: block;
-  font-size: 13px;
+  font-size: 24px;
   margin-top: -25px;
   width:50px;
   height:50px;
@@ -218,6 +218,7 @@ source {
   position: absolute;
   top: 50%;
   z-index: 1080;
+  border: none;
 }
  
 .lg-actions .lg-next.disabled, .lg-actions .lg-prev.disabled {
