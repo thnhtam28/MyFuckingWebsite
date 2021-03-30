@@ -1,4 +1,5 @@
-﻿
+﻿@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
 @{
     ViewData["Title"] = "Contact";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -54,16 +55,7 @@
                                         <i class="fal fa-mobile-android"></i>
                                     </div>
                                     <h3>01. Phone</h3>
-                                    <a href="#">+489756412322</a>
-                                </div>
-                                <!-- features-box end  -->
-                                <!--features-box -->
-                                <div class="features-box col-md-4">
-                                    <div class="time-line-icon">
-                                        <i class="fal fa-compass"></i>
-                                    </div>
-                                    <h3>02. Location</h3>
-                                    <a href="#">USA 27TH Brooklyn NY</a>
+                                    <a href="#">@Configuration["AppSetting:Contact:Phone"]</a>
                                 </div>
                                 <!-- features-box end  -->
                                 <!--features-box -->
@@ -71,8 +63,17 @@
                                     <div class="time-line-icon">
                                         <i class="fal fa-envelope-open"></i>
                                     </div>
-                                    <h3>03. Email</h3>
-                                    <a href="#">yourmail@domain.com</a>
+                                    <h3>02. Email</h3>
+                                    <a href="#">@Configuration["AppSetting:Contact:Email"]</a>
+                                </div>
+                                <!-- features-box end  -->
+                                <!--features-box -->
+                                <div class="features-box col-md-4">
+                                    <div class="time-line-icon">
+                                        <i class="fal fa-compass"></i>
+                                    </div>
+                                    <h3>03. Location</h3>
+                                    <a href="#">@Configuration["AppSetting:Contact:Address"]</a>
                                 </div>
                                 <!-- features-box end  -->
                             </div>
@@ -160,10 +161,10 @@
                 </div>
                 <div class="col-md-4">
                     <ul>
-                        <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
-                        <li><a href="#" target="_blank"><i class="fab fa-vk"></i></a></li>
+                        <li><a href="@Configuration["AppSetting:Social:Facebook"]" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="@Configuration["AppSetting:Social:Instagram"]" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="@Configuration["AppSetting:Social:Twitter"]" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="@Configuration["AppSetting:Social:Pinterest"]" target="_blank"><i class="fab fa-pinterest-p"></i></a></li>
                     </ul>
                 </div>
             </div>

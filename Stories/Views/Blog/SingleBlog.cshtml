@@ -242,11 +242,21 @@
                 <!-- content-nav -->
                 <div class="content-nav">
                     <ul>
-                        <li><a href="blog.html" class="ln"><i class="fal fa-arrow-left"></i><span class="tooltip">Prev - page 1</span></a></li>
                         <li>
-                            <span class="cur-page"><span>Page 2</span></span>
+                            @if (Model.PrevNextPosts[0] != null)
+                            {
+                                <a href="/blog/@Model.PrevNextPosts[0].Link" class="ln"><i class="fal fa-arrow-left"></i><span class="tooltip">Prev - @Model.PrevNextPosts[0].Title</span></a>
+                            }
                         </li>
-                        <li><a href="blog.html" class="rn"><i class="fal fa-arrow-right"></i><span class="tooltip">Next - page 2 </span></a></li>
+                        <li>
+                            <span class="cur-page"><span>Cur - @Model.Title</span></span>
+                        </li>
+                        <li>
+                            @if (Model.PrevNextPosts[1] != null)
+                            {
+                                <a href="/blog/@Model.PrevNextPosts[1].Link" class="rn"><i class="fal fa-arrow-right"></i><span class="tooltip">Next - @Model.PrevNextPosts[1].Title </span></a>
+                            }
+                        </li>
                     </ul>
                 </div>
                 <!-- content-nav end-->

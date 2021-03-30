@@ -121,7 +121,8 @@ namespace Stories.Services
 
         public async Task<BlogSingleViewModel> GetSinglePost(string link)
         {
-            var p = await _unitOfWork.GetRepository<Post>().GetAll().ToListAsync();
+            var p = await _unitOfWork.GetRepository<Post>().GetAll().OrderBy(x => x.CreatedDate).ToListAsync();
+            var p2 = p.OrderByDescending(x => x.CreatedDate).ToList();
             var users = await _unitOfWork.GetRepository<User>().GetAll().ToListAsync();
 
             // get Single Post
@@ -181,6 +182,16 @@ namespace Stories.Services
                     PostCount = p.Where(x => x.CategoryId == c.Id).Count()
                 });
             }
+
+            // get next and prev post
+            var prev = p.Find(x => x.CreatedDate > vm.CreatedDate);
+            var next = p2.Find(x => x.CreatedDate < vm.CreatedDate);
+
+            var list = new List<Post>();
+            list.Add(prev);
+            list.Add(next);
+
+            vm.PrevNextPosts = list;
 
             vm.CategoryName = cats.Find(x => x.Id == vm.CategoryId).Name;
             vm.AuthorName = user.Name;

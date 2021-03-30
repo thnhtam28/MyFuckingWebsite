@@ -54,5 +54,6 @@ namespace Stories.VM
         public List<string> Tags { get; set; }
         public List<Category> Categories { get; set; }
         public List<CategoryResponse> CategoriesNav { get; set; }
+        public List<Post> PrevNextPosts { get; set; }
     }
 }
