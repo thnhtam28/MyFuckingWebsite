@@ -1,5 +1,12 @@
 ﻿@using Microsoft.Extensions.Configuration
 @inject IConfiguration Configuration
+@inject Microsoft.AspNetCore.Mvc.Localization.IViewLocalizer localizer
+@inject Microsoft.Extensions.Options.IOptions<Microsoft.AspNetCore.Builder.RequestLocalizationOptions> locOptions
+@{ 
+    var culture = Context.Features.Get<Microsoft.AspNetCore.Localization.IRequestCultureFeature>();
+    var cultureList = locOptions.Value.SupportedUICultures.Select(x => new SelectListItem { Value = x.Name, Text = localizer.GetString(x.Name) }).ToList();
+    var returnUrl = string.IsNullOrWhiteSpace(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value}{Context.Request.QueryString}";
+}
 
 <!DOCTYPE HTML>
 <html lang="en">
@@ -55,7 +62,7 @@
                 <span class="nos"></span>
                 <span class="ncs"></span>
                 <span class="nbs"></span>
-                <div class="menu-button-text">Menu</div>
+                <div class="menu-button-text">@localizer["Menu"]</div>
             </div>
             <!-- nav-button-wrap end-->
             <div class="header-social">
@@ -69,7 +76,7 @@
             <!--  showshare -->
             <div class="show-share showshare">
                 <i class="fal fa-retweet"></i>
-                <span>Share This</span>
+                <span>@localizer["ShareThis"]</span>
             </div>
             <!--  showshare end -->
         </header>
@@ -151,6 +158,13 @@
                                             <li><a href="@Configuration["AppSetting:Social:Twitter"]" target="_blank"><i class="fab fa-twitter"></i></a></li>
                                             <li><a href="@Configuration["AppSetting:Social:Pinterest"]" target="_blank"><i class="fab fa-pinterest-p"></i></a></li>
                                         </ul>
+                                        <ul class="switch-lang">
+                                            <li>
+                                                <form asp-action="CultureManagement" asp-controller="Home" method="post" asp-route-returnUrl="@returnUrl">
+                                                    <select name="culture" asp-for="@culture.RequestCulture.UICulture.Name" asp-items="@cultureList" data-placeholder="0" class="chosen-select" onchange="this.form.submit()"></select>
+                                                </form>
+                                            </li>
+                                        </ul>
                                     </div>
                                     <!-- footer-socilal end -->
                                 </div>
@@ -189,10 +203,10 @@
         </div>
         <!-- share-wrapper end -->
     </div>
-        <!--=============== scripts  ===============-->
-        <script type="text/javascript" src="~/js/jquery.min.js"></script>
-        <script type="text/javascript" src="~/js/plugins.js"></script>
-        <script type="text/javascript" src="~/js/scripts.js"></script>
-        @RenderSection("Scripts", required: false)
+    <!--=============== scripts  ===============-->
+    <script type="text/javascript" src="~/js/jquery.min.js"></script>
+    <script type="text/javascript" src="~/js/plugins.js"></script>
+    <script type="text/javascript" src="~/js/scripts.js"></script>
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

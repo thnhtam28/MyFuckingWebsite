@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Stories.Models;
 using System;
 using System.Collections.Generic;
@@ -68,6 +70,15 @@ namespace Stories.Controllers
         {
             ViewBag.d = new DateTime(2021, 9, 12).ToString("MM/dd/yyyy");
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult CultureManagement(string culture, string returnUrl)
+        {
+            Response.Cookies.Append(CookieRequestCultureProvider.DefaultCookieName, CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+                new CookieOptions { Expires = DateTimeOffset.Now.AddDays(30)});
+
+            return LocalRedirect(returnUrl);
         }
 
         #region Error

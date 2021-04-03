@@ -8,11 +8,13 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Stories.AutoMapper;
 using Stories.Models;
 using Stories.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +32,22 @@ namespace Stories
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddLocalization(opt => { opt.ResourcesPath = "Resources"; });
+            services.AddMvc().AddViewLocalization(Microsoft.AspNetCore.Mvc.Razor.LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization();
+
+            services.Configure<RequestLocalizationOptions>(opt => {
+                var supportedCultures = new List<CultureInfo>()
+                {
+                    new CultureInfo("en"),
+                    new CultureInfo("vi"),
+                    new CultureInfo("ru")
+                };
+                opt.DefaultRequestCulture = new Microsoft.AspNetCore.Localization.RequestCulture("en");
+                opt.SupportedCultures = supportedCultures;
+                opt.SupportedUICultures = supportedCultures;
+            });
+
             services.AddControllersWithViews();
 
             var sqlConnectionString = Configuration.GetConnectionString(nameof(ApplicationDbContext));
@@ -105,6 +123,8 @@ namespace Stories
             };
 
             app.UseCookiePolicy(cookiePolicyOptions);
+
+            app.UseRequestLocalization(app.ApplicationServices.GetRequiredService<IOptions<RequestLocalizationOptions>>().Value);
 
             app.UseEndpoints(endpoints =>
             {
